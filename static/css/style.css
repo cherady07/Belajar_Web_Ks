@@ -139,7 +139,6 @@ h1, h2, h3 {
 }
 
 .menu-section {
-    padding: 70px 40px 80px;
     text-align: center;
     position: relative;
     padding: 90px 40px 60px;
@@ -359,7 +358,6 @@ h1, h2, h3 {
 }
 
 .why-us {
-    padding: 60px 40px 90px;
     background-color: #FFFDF8;
     padding: 50px 40px 100px;
 }
@@ -407,4 +405,105 @@ h1, h2, h3 {
 
 .btn-cta.fade-in:hover {
     transform: translateY(-4px);
+    transition: transform 0.2s ease;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+    .navbar {
+        padding: 16px 24px;
+    }
+
+    .hero h2 {
+        font-size: 34px;
+    }
+
+    .custom-row,
+    .custom-row.reverse {
+        flex-direction: column;
+    }
+
+    .custom-image,
+    .custom-text {
+        width: 100%;
+    }
+
+    .corndog-left {
+        left: 20px;
+    }
+
+    .corndog-right {
+        right: 20px;
+    }
+
+    .corndog-decor img {
+        width: 90px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .navbar nav {
+        margin-left: 0;
+    }
+
+    .navbar nav a {
+        margin-left: 0;
+        margin-right: 8px;
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .hero {
+        padding: 60px 20px 80px;
+    }
+
+    .hero h2 {
+        font-size: 26px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+    .menu-section {
+        padding: 60px 20px 40px;
+    }
+
+    .menu-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .menu-card {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .corndog-decor {
+        display: none;
+    }
+
+    .why-us-grid {
+        gap: 24px;
+    }
+
+    .why-item {
+        max-width: 140px;
+    }
+
+    .custom-title,
+    .custom-section h2 {
+        font-size: 24px;
+    }
+
+    .footer-contact {
+        padding: 32px 16px 40px;
+    }
 }
