@@ -1,6 +1,7 @@
-import sqlite3  # library Python bawaan buat koneksi ke SQLite (sudah dibahas sebelumnya)
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import check_password_hash
+import sqlite3  # library Python bawaan buat koneksi ke SQLite (sudah dibahas sebelumnya)
+import os
 
 
 app = Flask(__name__)
@@ -47,13 +48,45 @@ def login():
 def dashboard():
     if not session.get('admin_logged_in'):
         return redirect(url_for('login'))
-    return f"Selamat datang, {session['username']}! (dashboard masih kosong, nanti diisi CRUD menu)"
 
+    conn = get_db_connection()
+    semua_menu = conn.execute('SELECT * FROM menu').fetchall()
+    conn.close()
 
+    return render_template('dashboard.html', menu=semua_menu, username=session['username'])
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+@app.route('/tambah-menu', methods=['GET', 'POST'])
+def tambah_menu():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        nama = request.form['nama']
+        harga = request.form['harga']
+        stok = request.form['stok']
+        kategori = request.form['kategori']
+        foto = request.files['foto']
+
+        # simpan file foto ke folder static/images/menu/
+        nama_file = foto.filename
+        foto.save(os.path.join('static/images/menu', nama_file))
+
+        # simpan datanya ke database
+        conn = get_db_connection()
+        conn.execute(
+            'INSERT INTO menu (nama, harga, stok, kategori, foto) VALUES (?, ?, ?, ?, ?)',
+            (nama, harga, stok, kategori, nama_file)
+        )
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('dashboard'))
+
+    return render_template('tambah_menu.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
