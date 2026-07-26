@@ -6,7 +6,7 @@
     <title>Sweet Chil - Jajan, Kue & Corndog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
 
@@ -52,33 +52,21 @@
                      C70,40 60,70 0,70 Z" fill="#FFF6E9"/>
         </svg>
     </div>
-    <section id="menu" class="menu-section fade-in">
-        <span class="eyebrow center">Paling Sering Dipesan</span>
-        <h2>Menu Favorit Kami</h2>
-        <div class="menu-grid">
-            <div class="menu-card">
-                <div class="menu-emoji">🌭</div>
-                <h3>Corndog Original</h3>
-                <p class="harga">Rp 15.000</p>
-            </div>
-            <div class="menu-card">
-                <div class="menu-emoji">🥭</div>
-                <h3>Manisan Mangga</h3>
-                <p class="harga">Rp 10.000</p>
-            </div>
-            <div class="menu-card">
-                <div class="menu-emoji">🍬</div>
-                <h3>Jajan Pasar Mix</h3>
-                <p class="harga">Rp 12.000</p>
+
+   <section id="menu" class="menu-section fade-in">
+    <span class="eyebrow center">Paling Sering Dipesan</span>
+    <h2>Menu Favorit Kami</h2>
+    <div class="menu-grid">
+        {% for item in menu %}
+        <div class="menu-card" style="background-image: url('{{ url_for('static', filename='images/menu/' + item['foto']) }}');">
+            <div class="menu-card-overlay">
+                <h3>{{ item['nama'] }}</h3>
+                <p class="harga">Rp {{ item['harga'] }}</p>
             </div>
         </div>
-        <div class="corndog-decor corndog-left">
-    <img src="../static/images/fotoo.png" alt="Corndog Original">
-</div>
-<div class="corndog-decor corndog-right">
-    <img src="../static/images/foto.png" alt="Corndog Original">
-</div>
-    </section>
+        {% endfor %}
+    </div>
+</section>
 
     <section class="why-us fade-in">
     <div class="why-us-grid">
@@ -130,7 +118,7 @@
 
     <div class="custom-row fade-in">
         <div class="custom-image">
-            <img src="../static/images/custom1.png" alt="Kue Ulang Tahun">
+            <img src="/static/images/custom1.png" alt="Kue Ulang Tahun">
         </div>
         <div class="custom-text">
             <h3>Kue Ulang Tahun</h3>
@@ -140,7 +128,7 @@
 
     <div class="custom-row reverse fade-in">
         <div class="custom-image">
-            <img src="../static/images/custom2.png" alt="Kue Wisuda">
+            <img src="/static/images/custom2.png" alt="Kue Wisuda">
         </div>
         <div class="custom-text">
             <h3>Kue Wisuda & Kelulusan</h3>
@@ -150,7 +138,7 @@
 
     <div class="custom-row fade-in">
         <div class="custom-image">
-            <img src="../static/images/custom3.png" alt="Kue Lamaran">
+            <img src="/static/images/custom3.png" alt="Kue Lamaran">
         </div>
         <div class="custom-text">
             <h3>Kue Lamaran & Acara Spesial</h3>
@@ -192,7 +180,7 @@
     </footer>
 
     
-    <script src="../static/js/script.js"></script>
+    <script src="/static/js/script.js"></script>
 
 </body>
 </html>
