@@ -487,3 +487,30 @@ h3 {
     padding: 32px 16px 40px;
   }
 }
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #5a4a3a;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 1px;
+  border: 2px solid #fce3b8;
+  border-radius: 10px;
+  font-family: "Nunito", sans-serif;
+  font-size: 15px;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #e8a33d;
+}

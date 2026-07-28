@@ -15,6 +15,18 @@
   <body class="dashboard-page">
     <header class="dashboard-navbar">
       <p class="login-logo">🍡 Sweet Chil - Admin</p>
+      <nav class="dashboard-nav-links">
+        <a
+          href="{{ url_for('dashboard') }}"
+          class="{{ 'active' if request.endpoint == 'dashboard' }}"
+          >Kelola Menu</a
+        >
+        <a
+          href="{{ url_for('kelola_pesanan') }}"
+          class="{{ 'active' if request.endpoint == 'kelola_pesanan' }}"
+          >Pesanan Custom</a
+        >
+      </nav>
       <div class="dashboard-navbar-right">
         <span>Halo, {{ username }}</span>
         <a href="{{ url_for('logout') }}" class="btn-cta btn-logout">Logout</a>

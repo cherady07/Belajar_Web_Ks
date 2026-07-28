@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesanan Custom - Sweet Chil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/dashboard.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="dashboard-navbar">
+      <p class="login-logo">🍡 Sweet Chil - Admin</p>
+      <nav class="dashboard-nav-links">
+        <a href="{{ url_for('dashboard') }}">Kelola Menu</a>
+        <a href="{{ url_for('kelola_pesanan') }}" class="active"
+          >Pesanan Custom</a
+        >
+      </nav>
+      <div class="dashboard-navbar-right">
+        <span>Halo, {{ username }}</span>
+        <a href="{{ url_for('logout') }}" class="btn-cta btn-logout">Logout</a>
+      </div>
+    </header>
+
+    <main class="dashboard-content">
+      <h2>Pesanan Kue Custom</h2>
+
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Pemesan</th>
+            <th>Kontak</th>
+            <th>Jenis Kue</th>
+            <th>Tanggal Acara</th>
+            <th>Status</th>
+            <th>Harga</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in pesanan %}
+          <tr>
+            <td>{{ p['nama_pemesan'] }}</td>
+            <td>{{ p['kontak_pemesanan'] }}</td>
+            <td>
+              {{ p['jenis_kue'] }}{% if p['ukuran'] %} ({{ p['ukuran'] }}){%
+              endif %}
+            </td>
+            <td>{{ p['tanggal_acara'] }}</td>
+            <td>
+              <span class="status-badge status-{{ p['status_pesanan'] }}"
+                >{{ p['status_pesanan'] }}</span
+              >
+            </td>
+            <td>
+              {% if p['harga'] %}Rp {{ p['harga'] }}{% else %}Belum ditentukan{%
+              endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>

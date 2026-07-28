@@ -89,3 +89,134 @@
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(122, 46, 61, 0.08);
 }
+
+.edit-menu-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.dashboard-form {
+  flex: 1;
+}
+
+.photo-preview-card {
+  flex: 1;
+  background-color: #fffdf8;
+  border: 2px solid #fce3b8;
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(122, 46, 61, 0.08);
+}
+
+.photo-preview-label {
+  font-weight: 700;
+  color: #5a4a3a;
+  margin-bottom: 16px;
+}
+
+.photo-preview-card img {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #fce3b8;
+}
+
+.dashboard-nav-links {
+  display: flex;
+  gap: 8px;
+}
+
+.dashboard-nav-links a {
+  padding: 8px 18px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #5a4a3a;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.dashboard-nav-links a:hover {
+  background-color: #fff6e9;
+}
+
+.dashboard-nav-links a.active {
+  background-color: #7a2e3d;
+  color: #fff6e9;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.status-pending {
+  background-color: #fbe4c8;
+  color: #b2701c;
+}
+
+.status-diproses {
+  background-color: #d8e6f3;
+  color: #2c6fa8;
+}
+
+.status-selesai {
+  background-color: #d9efdd;
+  color: #2e7d42;
+}
+
+@media (max-width: 768px) {
+  .edit-menu-layout {
+    flex-direction: column;
+  }
+
+  .photo-preview-card img {
+    max-width: 200px;
+  }
+
+  .dashboard-content {
+    padding: 20px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .dashboard-navbar {
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  /* Tabel kelola menu jadi bisa di-scroll horizontal */
+  .dashboard-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .dashboard-table th,
+  .dashboard-table td {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .dashboard-thumb {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dashboard-actions a {
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 13px;
+  }
+}

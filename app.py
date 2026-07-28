@@ -133,5 +133,18 @@ def hapus_menu(id):
     conn.close()
     return redirect(url_for('dashboard'))
 
+@app.route('/kelola-pesanan')
+def kelola_pesanan():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    semua_pesanan = conn.execute(
+        'SELECT * FROM pesanan_custom ORDER BY tanggal_pesanan DESC'
+    ).fetchall()
+    conn.close()
+
+    return render_template('kelola_pesanan.html', pesanan=semua_pesanan, username=session['username'])
+
 if __name__ == '__main__':
     app.run(debug=True)

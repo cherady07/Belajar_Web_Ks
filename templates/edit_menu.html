@@ -23,68 +23,74 @@
     <main class="dashboard-content">
       <h2>Edit Menu: {{ item['nama'] }}</h2>
 
-      <form method="POST" enctype="multipart/form-data" class="dashboard-form">
-        <div class="form-group">
-          <label for="nama">Nama Menu</label>
-          <input
-            type="text"
-            id="nama"
-            name="nama"
-            value="{{ item['nama'] }}"
-            required
-          />
-        </div>
+      <div class="edit-menu-layout">
+        <form
+          method="POST"
+          enctype="multipart/form-data"
+          class="dashboard-form"
+        >
+          <div class="form-group">
+            <label for="nama">Nama Menu</label>
+            <input
+              type="text"
+              id="nama"
+              name="nama"
+              value="{{ item['nama'] }}"
+              required
+            />
+          </div>
 
-        <div class="form-group">
-          <label for="harga">Harga (Rp)</label>
-          <input
-            type="number"
-            id="harga"
-            name="harga"
-            value="{{ item['harga'] }}"
-            required
-          />
-        </div>
+          <div class="form-group">
+            <label for="harga">Harga (Rp)</label>
+            <input
+              type="number"
+              id="harga"
+              name="harga"
+              value="{{ item['harga'] }}"
+              required
+            />
+          </div>
 
-        <div class="form-group">
-          <label for="stok">Stok</label>
-          <input
-            type="number"
-            id="stok"
-            name="stok"
-            value="{{ item['stok'] }}"
-            required
-          />
-        </div>
+          <div class="form-group">
+            <label for="stok">Stok</label>
+            <input
+              type="number"
+              id="stok"
+              name="stok"
+              value="{{ item['stok'] }}"
+              required
+            />
+          </div>
 
-        <div class="form-group">
-          <label for="kategori">Kategori</label>
-          <input
-            type="text"
-            id="kategori"
-            name="kategori"
-            value="{{ item['kategori'] }}"
-            required
-          />
-        </div>
+          <div class="form-group">
+            <label for="kategori">Kategori</label>
+            <input
+              type="text"
+              id="kategori"
+              name="kategori"
+              value="{{ item['kategori'] }}"
+              required
+            />
+          </div>
 
-        <div class="form-group">
-          <label>Foto Saat Ini</label><br />
+          <div class="form-group">
+            <label for="foto"
+              >Ganti Foto (kosongkan kalau tidak ingin ganti)</label
+            >
+            <input type="file" id="foto" name="foto" accept="image/*" />
+          </div>
+
+          <button type="submit" class="login-btn">Update Menu</button>
+        </form>
+
+        <div class="photo-preview-card">
+          <p class="photo-preview-label">Foto Saat Ini</p>
           <img
             src="{{ url_for('static', filename='images/menu/' + item['foto']) }}"
-            class="dashboard-thumb"
+            alt="{{ item['nama'] }}"
           />
         </div>
-
-        <div class="form-group">
-          <label for="foto"
-            >Ganti Foto (kosongkan kalau tidak ingin ganti)</label
-          >
-          <input type="file" id="foto" name="foto" accept="image/*" />
-        </div>
-
-        <button type="submit" class="login-btn">Update Menu</button>
-      </form>
+      </div>
     </main>
   </body>
 </html>
