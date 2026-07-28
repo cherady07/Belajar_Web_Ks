@@ -1,42 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sweet Chil - Jajan, Kue & Corndog</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
 
-
-<body>
+  <body>
     <header class="navbar">
-        <h1 class="logo">🍡 Sweet Chil</h1>
-        <nav>
-            <a href="#menu">Menu</a>
-            <a href="#custom">Kue Custom</a>
-            <a href="#kontak">Kontak</a>
-        </nav>
+      <h1 class="logo">🍡 Sweet Chil</h1>
+      <nav>
+        <a href="#menu">Menu</a>
+        <a href="#custom">Kue Custom</a>
+        <a href="#kontak">Kontak</a>
+      </nav>
     </header>
 
     <section class="hero">
-        <div class="hero-content">
-            <span class="eyebrow">Dibuat fresh setiap hari</span>
-            <h2>Jajan Enak, Kue Cantik,<br>Corndog Kriuk</h2>
-            <p>Pesan sekarang, langsung diproses hari ini juga!</p>
-            <a href="#menu" class="btn-cta">Lihat Menu</a>
-            <div class="social-proof">
-                <span>⭐ 4.9/5</span>
-                <span class="dot">•</span>
-                <span>500+ Pesanan Terkirim</span>
-            </div>
+      <div class="hero-content">
+        <span class="eyebrow">Dibuat fresh setiap hari</span>
+        <h2>Jajan Enak, Kue Cantik,<br />Corndog Kriuk</h2>
+        <p>Pesan sekarang, langsung diproses hari ini juga!</p>
+        <a href="#menu" class="btn-cta">Lihat Menu</a>
+        <div class="social-proof">
+          <span>⭐ 4.9/5</span>
+          <span class="dot">•</span>
+          <span>500+ Pesanan Terkirim</span>
         </div>
+      </div>
     </section>
 
     <div class="drip-divider">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M0,0 L1200,0 L1200,40 
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path
+          d="M0,0 L1200,0 L1200,40 
                      C1150,40 1140,90 1100,90 
                      C1060,90 1050,50 1010,50 
                      C970,50 960,110 920,110 
@@ -49,53 +52,59 @@
                      C340,105 330,50 290,50 
                      C250,50 240,90 200,90 
                      C160,90 150,40 110,40 
-                     C70,40 60,70 0,70 Z" fill="#FFF6E9"/>
-        </svg>
+                     C70,40 60,70 0,70 Z"
+          fill="#FFF6E9"
+        />
+      </svg>
     </div>
 
-   <section id="menu" class="menu-section fade-in">
-    <span class="eyebrow center">Paling Sering Dipesan</span>
-    <h2>Menu Favorit Kami</h2>
-    <div class="menu-grid">
+    <section id="menu" class="menu-section fade-in">
+      <span class="eyebrow center">Paling Sering Dipesan</span>
+      <h2>Menu Favorit Kami</h2>
+      <div class="menu-grid">
         {% for item in menu %}
-        <div class="menu-card" style="background-image: url('{{ url_for('static', filename='images/menu/' + item['foto']) }}');">
-            <div class="menu-card-overlay">
-                <h3>{{ item['nama'] }}</h3>
-                <p class="harga">Rp {{ item['harga'] }}</p>
-            </div>
+        <div
+          class="menu-card"
+          style="background-image: url('{{ url_for('static', filename='images/menu/' + item['foto']) }}');"
+        >
+          <div class="menu-card-overlay">
+            <h3>{{ item['nama'] }}</h3>
+            <p class="harga">Rp {{ item['harga'] }}</p>
+          </div>
         </div>
         {% endfor %}
-    </div>
-</section>
+      </div>
+    </section>
 
     <section class="why-us fade-in">
-    <div class="why-us-grid">
+      <div class="why-us-grid">
         <div class="why-item">
-            <div class="why-icon">🌱</div>
-            <h3>Fresh Setiap Hari</h3>
-            <p>Semua dibuat baru, tanpa pengawet</p>
+          <div class="why-icon">🌱</div>
+          <h3>Fresh Setiap Hari</h3>
+          <p>Semua dibuat baru, tanpa pengawet</p>
         </div>
         <div class="why-item">
-            <div class="why-icon">🎂</div>
-            <h3>Bisa Custom</h3>
-            <p>Rasa dan desain sesuai request kamu</p>
+          <div class="why-icon">🎂</div>
+          <h3>Bisa Custom</h3>
+          <p>Rasa dan desain sesuai request kamu</p>
         </div>
         <div class="why-item">
-            <div class="why-icon">🚀</div>
-            <h3>Kirim Hari Ini</h3>
-            <p>Pesan pagi, sampai di hari yang sama</p>
+          <div class="why-icon">🚀</div>
+          <h3>Kirim Hari Ini</h3>
+          <p>Pesan pagi, sampai di hari yang sama</p>
         </div>
         <div class="why-item">
-            <div class="why-icon">💬</div>
-            <h3>Respon Cepat</h3>
-            <p>Chat kami kapan aja, kami balas cepat</p>
+          <div class="why-icon">💬</div>
+          <h3>Respon Cepat</h3>
+          <p>Chat kami kapan aja, kami balas cepat</p>
         </div>
-    </div>
-</section>
+      </div>
+    </section>
 
-<div class="drip-divider2">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M0,0 L1200,0 L1200,40 
+    <div class="drip-divider2">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path
+          d="M0,0 L1200,0 L1200,40 
                      C1150,40 1140,90 1100,90 
                      C1060,90 1050,50 1010,50 
                      C970,50 960,110 920,110 
@@ -108,51 +117,68 @@
                      C340,105 330,50 290,50 
                      C250,50 240,90 200,90 
                      C160,90 150,40 110,40 
-                     C70,40 60,70 0,70 Z" fill="#FFF6E9"/>
-        </svg>
+                     C70,40 60,70 0,70 Z"
+          fill="#FFF6E9"
+        />
+      </svg>
     </div>
     <section id="custom" class="custom-section">
-    <span class="eyebrow center light">Untuk Momen Spesial</span>
-    <h2 class="custom-title fade-in">Pesan Kue Custom</h2>
-    <p class="custom-intro fade-in">Buat ulang tahun, wisuda, lamaran, atau acara spesial lainnya — kami siap bikinin sesuai request kamu!</p>
+      <span class="eyebrow center light">Untuk Momen Spesial</span>
+      <h2 class="custom-title fade-in">Pesan Kue Custom</h2>
+      <p class="custom-intro fade-in">
+        Buat ulang tahun, wisuda, lamaran, atau acara spesial lainnya — kami
+        siap bikinin sesuai request kamu!
+      </p>
 
-    <div class="custom-row fade-in">
+      <div class="custom-row fade-in">
         <div class="custom-image">
-            <img src="/static/images/custom1.png" alt="Kue Ulang Tahun">
+          <img src="/static/images/custom1.png" alt="Kue Ulang Tahun" />
         </div>
         <div class="custom-text">
-            <h3>Kue Ulang Tahun</h3>
-            <p>Desain custom sesuai tema favorit, dari karakter kartun sampai konsep elegan minimalis.</p>
+          <h3>Kue Ulang Tahun</h3>
+          <p>
+            Desain custom sesuai tema favorit, dari karakter kartun sampai
+            konsep elegan minimalis.
+          </p>
         </div>
-    </div>
+      </div>
 
-    <div class="custom-row reverse fade-in">
+      <div class="custom-row reverse fade-in">
         <div class="custom-image">
-            <img src="/static/images/custom2.png" alt="Kue Wisuda">
+          <img src="/static/images/custom2.png" alt="Kue Wisuda" />
         </div>
         <div class="custom-text">
-            <h3>Kue Wisuda & Kelulusan</h3>
-            <p>Rayakan pencapaian dengan kue custom bertema wisuda, lengkap dengan topper nama.</p>
+          <h3>Kue Wisuda & Kelulusan</h3>
+          <p>
+            Rayakan pencapaian dengan kue custom bertema wisuda, lengkap dengan
+            topper nama.
+          </p>
         </div>
-    </div>
+      </div>
 
-    <div class="custom-row fade-in">
+      <div class="custom-row fade-in">
         <div class="custom-image">
-            <img src="/static/images/custom3.png" alt="Kue Lamaran">
+          <img src="/static/images/custom3.png" alt="Kue Lamaran" />
         </div>
         <div class="custom-text">
-            <h3>Kue Lamaran & Acara Spesial</h3>
-            <p>Bikin momen spesial kamu makin berkesan dengan kue custom yang elegan.</p>
+          <h3>Kue Lamaran & Acara Spesial</h3>
+          <p>
+            Bikin momen spesial kamu makin berkesan dengan kue custom yang
+            elegan.
+          </p>
         </div>
-    </div>
+      </div>
 
-    <a href="#kontak" class="btn-cta btn-light fade-in">Konsultasi Gratis via WhatsApp</a>
-</section>
+      <a href="#kontak" class="btn-cta btn-light fade-in"
+        >Konsultasi Gratis via WhatsApp</a
+      >
+    </section>
 
-   <footer id="kontak" class="footer">
-        <div class="drip-divider3">
-            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M0,0 L1200,0 L1200,40 
+    <footer id="kontak" class="footer">
+      <div class="drip-divider3">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path
+            d="M0,0 L1200,0 L1200,40 
                          C1150,40 1140,90 1100,90 
                          C1060,90 1050,50 1010,50 
                          C970,50 960,110 920,110 
@@ -165,22 +191,26 @@
                          C340,105 330,50 290,50 
                          C250,50 240,90 200,90 
                          C160,90 150,40 110,40 
-                         C70,40 60,70 0,70 Z" fill="#FFF6E9"/>
-            </svg>
-        </div>
+                         C70,40 60,70 0,70 Z"
+            fill="#FFF6E9"
+          />
+        </svg>
+      </div>
 
-        <div class="footer-contact">
-            <h2>Pesan & Konsultasi</h2>
-            <p>Untuk pemesanan dan pertanyaan, silakan hubungi kami melalui WhatsApp.</p>
-            <a href="https://wa.me/62887435184107" class="btn-cta btn-light">Chat WhatsApp</a>
-        </div>
+      <div class="footer-contact">
+        <h2>Pesan & Konsultasi</h2>
+        <p>
+          Untuk pemesanan dan pertanyaan, silakan hubungi kami melalui WhatsApp.
+        </p>
+        <a href="https://wa.me/62887435184107" class="btn-cta btn-light"
+          >Chat WhatsApp</a
+        >
+      </div>
 
-        <p class="footer-logo">🍡 Sweet Chil</p>
-        <p>Hubungi kami: 0887435184107</p>
+      <p class="footer-logo">🍡 Sweet Chil</p>
+      <p>Hubungi kami: 0887435184107</p>
     </footer>
 
-    
     <script src="/static/js/script.js"></script>
-
-</body>
+  </body>
 </html>

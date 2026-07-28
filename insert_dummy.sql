@@ -30,3 +30,4 @@ VALUES
 ('Budi Santoso', '628987654321', 'Brownies', '22x22', 'Brownies polos tanpa topping tambahan', '2026-07-22', '2026-07-25', 'selesai', 85000),
 ('Ayu Lestari', '628112233445', 'Kue Wisuda', NULL, 'Topper nama Ayu S.Kom, warna hijau toga', '2026-07-24', '2026-08-02', 'pending', NULL),
 ('Doni Prasetyo', '628556677889', 'Tart', 'Diameter 20cm', 'Tart coklat dengan tulisan Selamat Melamar', '2026-07-25', '2026-07-30', 'pending', 175000);
+

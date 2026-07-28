@@ -88,5 +88,50 @@ def tambah_menu():
 
     return render_template('tambah_menu.html')
 
+@app.route('/edit-menu/<int:id>', methods=['GET', 'POST'])
+def edit_menu(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    item = conn.execute('SELECT * FROM menu WHERE id = ?', (id,)).fetchone()
+
+    if request.method == 'POST':
+        nama = request.form['nama']
+        harga = request.form['harga']
+        stok = request.form['stok']
+        kategori = request.form['kategori']
+        foto = request.files['foto']
+
+        # cek apakah admin upload foto baru atau tidak
+        if foto and foto.filename != '':
+            nama_file = foto.filename
+            foto.save(os.path.join('static/images/menu', nama_file))
+        else:
+            nama_file = item['foto']  # tetap pakai foto lama
+
+        conn.execute(
+            'UPDATE menu SET nama = ?, harga = ?, stok = ?, kategori = ?, foto = ? WHERE id = ?',
+            (nama, harga, stok, kategori, nama_file, id)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('dashboard'))
+
+    conn.close()
+    return render_template('edit_menu.html', item=item)
+
+
+@app.route('/hapus-menu/<int:id>')
+def hapus_menu(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    conn.execute('DELETE FROM menu WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('dashboard'))
+
 if __name__ == '__main__':
     app.run(debug=True)

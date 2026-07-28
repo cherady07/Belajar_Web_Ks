@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS pesanan_custom (
 );
 
 CREATE TABLE IF NOT EXISTS admin (
-id INTEGER PRIMARY KEY,
-    username TEXT UNIQUE NOT NULL,    password TEXT NOT NULL
+    id INTEGER PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
 );

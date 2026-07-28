@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tambah Menu - Sweet Chil</title>
+    <title>Edit Menu - Sweet Chil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
@@ -21,35 +21,69 @@
     </header>
 
     <main class="dashboard-content">
-      <h2>Tambah Menu Baru</h2>
+      <h2>Edit Menu: {{ item['nama'] }}</h2>
 
       <form method="POST" enctype="multipart/form-data" class="dashboard-form">
         <div class="form-group">
           <label for="nama">Nama Menu</label>
-          <input type="text" id="nama" name="nama" required />
+          <input
+            type="text"
+            id="nama"
+            name="nama"
+            value="{{ item['nama'] }}"
+            required
+          />
         </div>
 
         <div class="form-group">
           <label for="harga">Harga (Rp)</label>
-          <input type="number" id="harga" name="harga" required />
+          <input
+            type="number"
+            id="harga"
+            name="harga"
+            value="{{ item['harga'] }}"
+            required
+          />
         </div>
 
         <div class="form-group">
           <label for="stok">Stok</label>
-          <input type="number" id="stok" name="stok" required />
+          <input
+            type="number"
+            id="stok"
+            name="stok"
+            value="{{ item['stok'] }}"
+            required
+          />
         </div>
 
         <div class="form-group">
           <label for="kategori">Kategori</label>
-          <input type="text" id="kategori" name="kategori" required />
+          <input
+            type="text"
+            id="kategori"
+            name="kategori"
+            value="{{ item['kategori'] }}"
+            required
+          />
         </div>
 
         <div class="form-group">
-          <label for="foto">Foto Menu</label>
-          <input type="file" id="foto" name="foto" accept="image/*" required />
+          <label>Foto Saat Ini</label><br />
+          <img
+            src="{{ url_for('static', filename='images/menu/' + item['foto']) }}"
+            class="dashboard-thumb"
+          />
         </div>
 
-        <button type="submit" class="login-btn">Simpan Menu</button>
+        <div class="form-group">
+          <label for="foto"
+            >Ganti Foto (kosongkan kalau tidak ingin ganti)</label
+          >
+          <input type="file" id="foto" name="foto" accept="image/*" />
+        </div>
+
+        <button type="submit" class="login-btn">Update Menu</button>
       </form>
     </main>
   </body>
