@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Pesanan - Sweet Chil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body class="dashboard-page">
+    <header class="dashboard-navbar">
+        <p class="login-logo">🍡 Sweet Chil - Admin</p>
+        <nav class="dashboard-nav-links">
+            <a href="{{ url_for('dashboard') }}">Kelola Menu</a>
+            <a href="{{ url_for('kelola_pesanan') }}" class="active">Pesanan Custom</a>
+        </nav>
+        <a href="{{ url_for('kelola_pesanan') }}" class="btn-cta btn-logout">Kembali</a>
+    </header>
+
+    <main class="dashboard-content">
+        <div class="dashboard-form">
+            <h2>Edit Pesanan: {{ p['nama_pemesan'] }}</h2>
+
+            <form method="POST">
+                <div class="form-group">
+                    <label for="nama_pemesan">Nama Pemesan</label>
+                    <input type="text" id="nama_pemesan" name="nama_pemesan" value="{{ p['nama_pemesan'] }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="kontak_pemesanan">Kontak (WhatsApp)</label>
+                    <input type="text" id="kontak_pemesanan" name="kontak_pemesanan" value="{{ p['kontak_pemesanan'] }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="jenis_kue">Jenis Kue</label>
+                    <input type="text" id="jenis_kue" name="jenis_kue" value="{{ p['jenis_kue'] }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ukuran">Ukuran (kosongkan jika tidak ada)</label>
+                    <input type="text" id="ukuran" name="ukuran" value="{{ p['ukuran'] or '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="deskripsi">Deskripsi / Request</label>
+                    <textarea id="deskripsi" name="deskripsi" rows="4" required>{{ p['deskripsi'] }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal_acara">Tanggal Acara</label>
+                    <input type="date" id="tanggal_acara" name="tanggal_acara" value="{{ p['tanggal_acara'] }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="status_pesanan">Status Pesanan</label>
+                    <select id="status_pesanan" name="status_pesanan" required>
+                        <option value="pending" {{ 'selected' if p['status_pesanan'] == 'pending' }}>Pending</option>
+                        <option value="diproses" {{ 'selected' if p['status_pesanan'] == 'diproses' }}>Diproses</option>
+                        <option value="selesai" {{ 'selected' if p['status_pesanan'] == 'selesai' }}>Selesai</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="harga">Harga (kosongkan jika belum dinego)</label>
+                    <input type="number" id="harga" name="harga" value="{{ p['harga'] or '' }}">
+                </div>
+
+                <button type="submit" class="login-btn">Update Pesanan</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

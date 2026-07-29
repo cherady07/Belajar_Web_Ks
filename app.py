@@ -16,9 +16,13 @@ def get_db_connection():
 @app.route('/')
 def home():
     conn = get_db_connection()
-    semua_menu = conn.execute('SELECT * FROM menu').fetchall()  # 2 method: 1) jalankan query, 2) ambil semua hasilnya
+    semua_menu = conn.execute('SELECT * FROM menu').fetchall()
     conn.close()
-    return render_template('index.html', menu=semua_menu)  # kirim data menu ke template
+
+    sukses = request.args.get('sukses')
+    nama = request.args.get('nama', 'Kak')
+
+    return render_template('index.html', menu=semua_menu, sukses=sukses, nama=nama)
 
 
 
@@ -145,6 +149,76 @@ def kelola_pesanan():
     conn.close()
 
     return render_template('kelola_pesanan.html', pesanan=semua_pesanan, username=session['username'])
+
+@app.route('/edit-pesanan/<int:id>', methods=['GET', 'POST'])
+def edit_pesanan(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    pesanan = conn.execute('SELECT * FROM pesanan_custom WHERE id = ?', (id,)).fetchone()
+
+    if request.method == 'POST':
+        nama_pemesan = request.form['nama_pemesan']
+        kontak_pemesanan = request.form['kontak_pemesanan']
+        jenis_kue = request.form['jenis_kue']
+        ukuran = request.form['ukuran']
+        deskripsi = request.form['deskripsi']
+        tanggal_acara = request.form['tanggal_acara']
+        status_pesanan = request.form['status_pesanan']
+        harga = request.form['harga']
+
+        # kalau ukuran/harga dikosongkan, simpan sebagai NULL, bukan string kosong
+        ukuran = ukuran if ukuran else None
+        harga = harga if harga else None
+
+        conn.execute('''
+            UPDATE pesanan_custom
+            SET nama_pemesan = ?, kontak_pemesanan = ?, jenis_kue = ?, ukuran = ?,
+                deskripsi = ?, tanggal_acara = ?, status_pesanan = ?, harga = ?
+            WHERE id = ?
+        ''', (nama_pemesan, kontak_pemesanan, jenis_kue, ukuran, deskripsi,
+              tanggal_acara, status_pesanan, harga, id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('kelola_pesanan'))
+
+    conn.close()
+    return render_template('edit_pesanan.html', p=pesanan)
+
+from datetime import date  # tambahin di baris import paling atas
+
+@app.route('/pesan-custom', methods=['POST'])
+def pesan_custom():
+    nama_pemesan = request.form['nama_pemesan']
+    kontak_pemesanan = request.form['kontak_pemesanan']
+    jenis_kue = request.form['jenis_kue']
+    ukuran = request.form['ukuran']
+    deskripsi = request.form['deskripsi']
+    tanggal_acara = request.form['tanggal_acara']
+
+    ukuran = ukuran if ukuran else None
+    tanggal_pesanan = date.today().isoformat()
+
+    # tangani upload foto referensi (opsional)
+    foto = request.files['foto_referensi']
+    if foto and foto.filename != '':
+        nama_file_foto = foto.filename
+        foto.save(os.path.join('static/images/referensi', nama_file_foto))
+    else:
+        nama_file_foto = None
+
+    conn = get_db_connection()
+    conn.execute('''
+        INSERT INTO pesanan_custom
+        (nama_pemesan, kontak_pemesanan, jenis_kue, ukuran, deskripsi, tanggal_pesanan, tanggal_acara, status_pesanan, harga, foto_referensi)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NULL, ?)
+    ''', (nama_pemesan, kontak_pemesanan, jenis_kue, ukuran, deskripsi, tanggal_pesanan, tanggal_acara, nama_file_foto))
+    conn.commit()
+    conn.close()
+
+    session['last_order_name'] = nama_pemesan
+    return redirect(url_for('home', sukses=1, nama=nama_pemesan))
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -39,6 +39,8 @@
             <th>Tanggal Acara</th>
             <th>Status</th>
             <th>Harga</th>
+            <th>Referensi</th>
+            <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -59,6 +61,26 @@
             <td>
               {% if p['harga'] %}Rp {{ p['harga'] }}{% else %}Belum ditentukan{%
               endif %}
+            </td>
+            <td>
+              {% if p['foto_referensi'] %}
+              <a
+                href="{{ url_for('static', filename='images/referensi/' + p['foto_referensi']) }}"
+                target="_blank"
+              >
+                <img
+                  src="{{ url_for('static', filename='images/referensi/' + p['foto_referensi']) }}"
+                  class="dashboard-thumb"
+                />
+              </a>
+              {% else %} - {% endif %}
+            </td>
+            <td>
+              <a
+                href="{{ url_for('edit_pesanan', id=p['id']) }}"
+                class="btn-edit"
+                >Edit</a
+              >
             </td>
           </tr>
           {% endfor %}

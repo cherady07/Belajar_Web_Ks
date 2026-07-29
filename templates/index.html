@@ -172,6 +172,88 @@
       <a href="#kontak" class="btn-cta btn-light fade-in"
         >Konsultasi Gratis via WhatsApp</a
       >
+
+      <div class="custom-form-wrapper fade-in">
+        <h3 class="custom-form-title">Atau Isi Form Pemesanan</h3>
+        <form
+          method="POST"
+          action="{{ url_for('pesan_custom') }}"
+          enctype="multipart/form-data"
+          class="custom-form"
+        >
+          <div class="form-group">
+            <label for="nama_pemesan">Nama Kamu</label>
+            <input type="text" id="nama_pemesan" name="nama_pemesan" required />
+          </div>
+
+          <div class="form-group">
+            <label for="kontak_pemesanan">Nomor WhatsApp</label>
+            <input
+              type="text"
+              id="kontak_pemesanan"
+              name="kontak_pemesanan"
+              placeholder="Contoh: 628123456789"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="jenis_kue">Jenis Kue</label>
+            <input
+              type="text"
+              id="jenis_kue"
+              name="jenis_kue"
+              placeholder="Kue Ulang Tahun / Brownies / Tart / dll"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="ukuran">Ukuran (jika ada)</label>
+            <input
+              type="text"
+              id="ukuran"
+              name="ukuran"
+              placeholder="Contoh: 20x20 atau Diameter 20cm"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="deskripsi">Deskripsi / Request</label>
+            <textarea
+              id="deskripsi"
+              name="deskripsi"
+              rows="4"
+              placeholder="Ceritain tema, warna, tulisan yang diinginkan..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="tanggal_acara">Tanggal Acara</label>
+            <input
+              type="date"
+              id="tanggal_acara"
+              name="tanggal_acara"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="foto_referensi">Foto Referensi (opsional)</label>
+            <input
+              type="file"
+              id="foto_referensi"
+              name="foto_referensi"
+              accept="image/*"
+              onchange="tampilkanNamaFile(this)"
+            />
+            <p id="namaFileTerpilih" class="nama-file-info"></p>
+          </div>
+
+          <button type="submit" class="btn-cta btn-light">Kirim Pesanan</button>
+        </form>
+      </div>
     </section>
 
     <footer id="kontak" class="footer">
@@ -212,5 +294,21 @@
     </footer>
 
     <script src="/static/js/script.js"></script>
+    {% if sukses %}
+    <div class="modal-overlay" id="modalSukses">
+      <div class="modal-box">
+        <p class="login-logo">🍡 Sweet Chil</p>
+        <h2>Terima kasih, {{ nama }}!</h2>
+        <p class="modal-text">
+          Pesananmu udah kami terima. Yuk lanjut chat WhatsApp biar kami bisa
+          diskusi detail & konfirmasi lebih cepat!
+        </p>
+        <a href="https://wa.me/62887435184107" class="btn-cta login-btn"
+          >Chat WhatsApp</a
+        >
+        <button onclick="tutupModal()" class="modal-close">Tutup</button>
+      </div>
+    </div>
+    {% endif %}
   </body>
 </html>

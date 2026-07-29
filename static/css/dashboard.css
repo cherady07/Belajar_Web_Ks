@@ -97,7 +97,13 @@
 }
 
 .dashboard-form {
-  flex: 1;
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #fffdf8;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(122, 46, 61, 0.08);
+  border: 2px solid #fce3b8;
 }
 
 .photo-preview-card {
