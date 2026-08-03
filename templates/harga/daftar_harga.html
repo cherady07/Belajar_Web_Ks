@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard Admin - Sweet Chil</title>
+    <title>Daftar Harga - Sweet Chil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
@@ -16,16 +16,9 @@
     <header class="dashboard-navbar">
       <p class="login-logo">🍡 Sweet Chil - Admin</p>
       <nav class="dashboard-nav-links">
-        <a
-          href="{{ url_for('dashboard') }}"
-          class="{{ 'active' if request.endpoint == 'dashboard' }}"
-          >Kelola Menu</a
-        >
-        <a
-          href="{{ url_for('kelola_pesanan') }}"
-          class="{{ 'active' if request.endpoint == 'kelola_pesanan' }}"
-          >Pesanan Custom</a
-        >
+        <a href="{{ url_for('dashboard') }}">Kelola Menu</a>
+        <a href="{{ url_for('kelola_pesanan') }}">Pesanan Custom</a>
+        <a href="{{ url_for('daftar_harga') }}" class="active">Daftar Harga</a>
       </nav>
       <div class="dashboard-navbar-right">
         <span>Halo, {{ username }}</span>
@@ -35,46 +28,37 @@
 
     <main class="dashboard-content">
       <div class="dashboard-header">
-        <h2>Kelola Menu</h2>
-        <a href="{{ url_for('tambah_menu') }}" class="btn-cta">+ Tambah Menu</a>
+        <h2>Daftar Harga Brownies & Tart</h2>
+        <a href="{{ url_for('tambah_harga') }}" class="btn-cta"
+          >+ Tambah Harga</a
+        >
       </div>
 
       <table class="dashboard-table">
         <thead>
           <tr>
-            <th>Foto</th>
-            <th>Nama</th>
-            <th>Kategori</th>
+            <th>Jenis Kue</th>
+            <th>Ukuran</th>
             <th>Harga</th>
-            <th>Stok</th>
             <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
-          {% for item in menu %}
+          {% for item in harga %}
           <tr>
-            <td>
-              <img
-                src="{{ url_for('static', filename='images/menu/' + item['foto']) }}"
-                alt="{{ item['nama'] }}"
-                class="dashboard-thumb"
-              />
-            </td>
-            <td>{{ item['nama'] }}</td>
-            <td>{{ item['kategori'] }}</td>
+            <td>{{ item['jenis_kue'] }}</td>
+            <td>{{ item['ukuran'] }}</td>
             <td>Rp {{ item['harga'] }}</td>
-            <td>{{ item['stok'] }}</td>
-
             <td class="dashboard-actions">
               <a
-                href="{{ url_for('edit_menu', id=item['id']) }}"
+                href="{{ url_for('edit_harga', id=item['id']) }}"
                 class="btn-edit"
                 >Edit</a
               >
               <a
-                href="{{ url_for('hapus_menu', id=item['id']) }}"
+                href="{{ url_for('hapus_harga', id=item['id']) }}"
                 class="btn-delete"
-                onclick="return confirm('Yakin mau hapus menu ini?');"
+                onclick="return confirm('Yakin mau hapus harga ini?');"
                 >Hapus</a
               >
             </td>

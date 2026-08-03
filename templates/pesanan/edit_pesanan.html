@@ -13,9 +13,10 @@
     <header class="dashboard-navbar">
         <p class="login-logo">🍡 Sweet Chil - Admin</p>
         <nav class="dashboard-nav-links">
-            <a href="{{ url_for('dashboard') }}">Kelola Menu</a>
-            <a href="{{ url_for('kelola_pesanan') }}" class="active">Pesanan Custom</a>
-        </nav>
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint == 'dashboard' }}">Kelola Menu</a>
+    <a href="{{ url_for('kelola_pesanan') }}" class="{{ 'active' if request.endpoint == 'kelola_pesanan' }}">Pesanan Custom</a>
+    <a href="{{ url_for('daftar_harga') }}" class="{{ 'active' if request.endpoint == 'daftar_harga' }}">Daftar Harga</a>
+</nav>
         <a href="{{ url_for('kelola_pesanan') }}" class="btn-cta btn-logout">Kembali</a>
     </header>
 

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Admin - Sweet Chil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/dashboard.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="dashboard-navbar">
+      <p class="login-logo">🍡 Sweet Chil - Admin</p>
+      <nav class="dashboard-nav-links">
+        <a
+          href="{{ url_for('dashboard') }}"
+          class="{{ 'active' if request.endpoint == 'dashboard' }}"
+          >Kelola Menu</a
+        >
+        <a
+          href="{{ url_for('kelola_pesanan') }}"
+          class="{{ 'active' if request.endpoint == 'kelola_pesanan' }}"
+          >Pesanan Custom</a
+        >
+        <a
+          href="{{ url_for('daftar_harga') }}"
+          class="{{ 'active' if request.endpoint == 'daftar_harga' }}"
+          >Daftar Harga</a
+        >
+      </nav>
+      <div class="dashboard-navbar-right">
+        <span>Halo, {{ username }}</span>
+        <a href="{{ url_for('logout') }}" class="btn-cta btn-logout">Logout</a>
+      </div>
+    </header>
+
+    <main class="dashboard-content">
+      <div class="dashboard-header">
+        <h2>Kelola Menu</h2>
+        <a href="{{ url_for('tambah_menu') }}" class="btn-cta">+ Tambah Menu</a>
+      </div>
+
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Foto</th>
+            <th>Nama</th>
+            <th>Kategori</th>
+            <th>Harga</th>
+            <th>Stok</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in menu %}
+          <tr>
+            <td>
+              <img
+                src="{{ url_for('static', filename='images/menu/' + item['foto']) }}"
+                alt="{{ item['nama'] }}"
+                class="dashboard-thumb"
+              />
+            </td>
+            <td>{{ item['nama'] }}</td>
+            <td>{{ item['kategori'] }}</td>
+            <td>Rp {{ item['harga'] }}</td>
+            <td>{{ item['stok'] }}</td>
+
+            <td class="dashboard-actions">
+              <a
+                href="{{ url_for('edit_menu', id=item['id']) }}"
+                class="btn-edit"
+                >Edit</a
+              >
+              <a
+                href="{{ url_for('hapus_menu', id=item['id']) }}"
+                class="btn-delete"
+                onclick="return confirm('Yakin mau hapus menu ini?');"
+                >Hapus</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>

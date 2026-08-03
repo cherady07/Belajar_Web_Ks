@@ -57,7 +57,7 @@ def dashboard():
     semua_menu = conn.execute('SELECT * FROM menu').fetchall()
     conn.close()
 
-    return render_template('dashboard.html', menu=semua_menu, username=session['username'])
+    return render_template('menu/dashboard.html', menu=semua_menu, username=session['username'])
 @app.route('/logout')
 def logout():
     session.clear()
@@ -90,7 +90,7 @@ def tambah_menu():
 
         return redirect(url_for('dashboard'))
 
-    return render_template('tambah_menu.html')
+    return render_template('menu/tambah_menu.html')
 
 @app.route('/edit-menu/<int:id>', methods=['GET', 'POST'])
 def edit_menu(id):
@@ -123,7 +123,7 @@ def edit_menu(id):
         return redirect(url_for('dashboard'))
 
     conn.close()
-    return render_template('edit_menu.html', item=item)
+    return render_template('menu/edit_menu.html', item=item)
 
 
 @app.route('/hapus-menu/<int:id>')
@@ -148,7 +148,7 @@ def kelola_pesanan():
     ).fetchall()
     conn.close()
 
-    return render_template('kelola_pesanan.html', pesanan=semua_pesanan, username=session['username'])
+    return render_template('pesanan/kelola_pesanan.html', pesanan=semua_pesanan, username=session['username'])
 
 @app.route('/edit-pesanan/<int:id>', methods=['GET', 'POST'])
 def edit_pesanan(id):
@@ -184,7 +184,7 @@ def edit_pesanan(id):
         return redirect(url_for('kelola_pesanan'))
 
     conn.close()
-    return render_template('edit_pesanan.html', p=pesanan)
+    return render_template('pesanan/edit_pesanan.html', p=pesanan)
 
 from datetime import date  # tambahin di baris import paling atas
 
@@ -219,6 +219,76 @@ def pesan_custom():
 
     session['last_order_name'] = nama_pemesan
     return redirect(url_for('home', sukses=1, nama=nama_pemesan))
+
+@app.route('/daftar-harga')
+def daftar_harga():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    semua_harga = conn.execute('SELECT * FROM daftar_harga').fetchall()
+    conn.close()
+
+    return render_template('harga/daftar_harga.html', harga=semua_harga, username=session['username'])
+
+
+@app.route('/tambah-harga', methods=['GET', 'POST'])
+def tambah_harga():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        jenis_kue = request.form['jenis_kue']
+        ukuran = request.form['ukuran']
+        harga = request.form['harga']
+
+        conn = get_db_connection()
+        conn.execute(
+            'INSERT INTO daftar_harga (jenis_kue, ukuran, harga) VALUES (?, ?, ?)',
+            (jenis_kue, ukuran, harga)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('daftar_harga'))
+
+    return render_template('harga/tambah_harga.html')
+
+
+@app.route('/edit-harga/<int:id>', methods=['GET', 'POST'])
+def edit_harga(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    item = conn.execute('SELECT * FROM daftar_harga WHERE id = ?', (id,)).fetchone()
+
+    if request.method == 'POST':
+        jenis_kue = request.form['jenis_kue']
+        ukuran = request.form['ukuran']
+        harga = request.form['harga']
+
+        conn.execute(
+            'UPDATE daftar_harga SET jenis_kue = ?, ukuran = ?, harga = ? WHERE id = ?',
+            (jenis_kue, ukuran, harga, id)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('daftar_harga'))
+
+    conn.close()
+    return render_template('harga/edit_harga.html', item=item)
+
+
+@app.route('/hapus-harga/<int:id>')
+def hapus_harga(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    conn.execute('DELETE FROM daftar_harga WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('daftar_harga'))
 
 if __name__ == '__main__':
     app.run(debug=True)
