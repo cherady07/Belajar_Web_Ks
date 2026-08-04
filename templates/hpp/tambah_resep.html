@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tambah Menu - Sweet Chil</title>
+    <title>Tambah Resep - Sweet Chil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
@@ -15,9 +15,6 @@
   <body class="dashboard-page">
     <header class="dashboard-navbar">
       <p class="login-logo">🍡 Sweet Chil - Admin</p>
-      <a href="{{ url_for('dashboard') }}" class="btn-cta btn-logout"
-        >Kembali</a
-      >
       <nav class="dashboard-nav-links">
         <a
           href="{{ url_for('dashboard') }}"
@@ -44,39 +41,48 @@
           </div>
         </div>
       </nav>
+      <a href="{{ url_for('resep') }}" class="btn-cta btn-logout">Kembali</a>
     </header>
 
     <main class="dashboard-content">
-      <h2>Tambah Menu Baru</h2>
+      <div class="dashboard-form">
+        <h2>Tambah Resep Baru</h2>
+        <form method="POST">
+          <div class="form-group">
+            <label for="menu_id">Pilih Menu</label>
+            <select id="menu_id" name="menu_id" required>
+              {% for m in daftar_menu %}
+              <option value="{{ m['id'] }}">{{ m['nama'] }}</option>
+              {% endfor %}
+            </select>
+          </div>
 
-      <form method="POST" enctype="multipart/form-data" class="dashboard-form">
-        <div class="form-group">
-          <label for="nama">Nama Menu</label>
-          <input type="text" id="nama" name="nama" required />
-        </div>
+          <div class="form-group">
+            <label for="bahan_baku_id">Pilih Bahan</label>
+            <select id="bahan_baku_id" name="bahan_baku_id" required>
+              {% for b in daftar_bahan %}
+              <option value="{{ b['id'] }}">
+                {{ b['nama'] }} ({{ b['satuan'] }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="harga">Harga (Rp)</label>
-          <input type="number" id="harga" name="harga" required />
-        </div>
+          <div class="form-group">
+            <label for="jumlah_dipakai">Jumlah Dipakai</label>
+            <input
+              type="number"
+              step="0.01"
+              id="jumlah_dipakai"
+              name="jumlah_dipakai"
+              placeholder="Contoh: 0.05"
+              required
+            />
+          </div>
 
-        <div class="form-group">
-          <label for="stok">Stok</label>
-          <input type="number" id="stok" name="stok" required />
-        </div>
-
-        <div class="form-group">
-          <label for="kategori">Kategori</label>
-          <input type="text" id="kategori" name="kategori" required />
-        </div>
-
-        <div class="form-group">
-          <label for="foto">Foto Menu</label>
-          <input type="file" id="foto" name="foto" accept="image/*" required />
-        </div>
-
-        <button type="submit" class="login-btn">Simpan Menu</button>
-      </form>
+          <button type="submit" class="login-btn">Simpan Resep</button>
+        </form>
+      </div>
     </main>
   </body>
 </html>

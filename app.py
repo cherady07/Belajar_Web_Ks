@@ -290,5 +290,147 @@ def hapus_harga(id):
     conn.close()
     return redirect(url_for('daftar_harga'))
 
+@app.route('/bahan-baku')
+def bahan_baku():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    semua_bahan = conn.execute('SELECT * FROM bahan_baku').fetchall()
+    conn.close()
+    return render_template('hpp/bahan_baku.html', bahan=semua_bahan, username=session['username'])
+
+
+@app.route('/tambah-bahan', methods=['GET', 'POST'])
+def tambah_bahan():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        nama = request.form['nama']
+        harga_per_satuan = request.form['harga_per_satuan']
+        satuan = request.form['satuan']
+
+        conn = get_db_connection()
+        conn.execute(
+            'INSERT INTO bahan_baku (nama, harga_per_satuan, satuan) VALUES (?, ?, ?)',
+            (nama, harga_per_satuan, satuan)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('bahan_baku'))
+
+    return render_template('hpp/tambah_bahan.html')
+
+
+@app.route('/edit-bahan/<int:id>', methods=['GET', 'POST'])
+def edit_bahan(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    item = conn.execute('SELECT * FROM bahan_baku WHERE id = ?', (id,)).fetchone()
+
+    if request.method == 'POST':
+        nama = request.form['nama']
+        harga_per_satuan = request.form['harga_per_satuan']
+        satuan = request.form['satuan']
+
+        conn.execute(
+            'UPDATE bahan_baku SET nama = ?, harga_per_satuan = ?, satuan = ? WHERE id = ?',
+            (nama, harga_per_satuan, satuan, id)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('bahan_baku'))
+
+    conn.close()
+    return render_template('hpp/edit_bahan.html', item=item)
+
+
+@app.route('/hapus-bahan/<int:id>')
+def hapus_bahan(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    conn.execute('DELETE FROM bahan_baku WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('bahan_baku'))
+
+@app.route('/hpp')
+def hpp():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    hasil_hpp = conn.execute('''
+        SELECT menu.id, menu.nama, menu.harga AS harga_jual,
+               SUM(bahan_baku.harga_per_satuan * resep.jumlah_dipakai) AS total_hpp
+        FROM resep
+        JOIN menu ON resep.menu_id = menu.id
+        JOIN bahan_baku ON resep.bahan_baku_id = bahan_baku.id
+        GROUP BY menu.id
+    ''').fetchall()
+    conn.close()
+
+    return render_template('hpp/hpp.html', hpp=hasil_hpp, username=session['username'])  # <- cuma ini yang berubah, tambahin prefix 'hpp/'
+
+@app.route('/resep')
+def resep():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    semua_resep = conn.execute('''
+        SELECT resep.id, menu.nama AS nama_menu, bahan_baku.nama AS nama_bahan,
+               resep.jumlah_dipakai, bahan_baku.satuan
+        FROM resep
+        JOIN menu ON resep.menu_id = menu.id
+        JOIN bahan_baku ON resep.bahan_baku_id = bahan_baku.id
+        ORDER BY menu.nama
+    ''').fetchall()
+    conn.close()
+    return render_template('hpp/resep.html', resep=semua_resep, username=session['username'])
+
+
+@app.route('/tambah-resep', methods=['GET', 'POST'])
+def tambah_resep():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+
+    if request.method == 'POST':
+        menu_id = request.form['menu_id']
+        bahan_baku_id = request.form['bahan_baku_id']
+        jumlah_dipakai = request.form['jumlah_dipakai']
+
+        conn.execute(
+            'INSERT INTO resep (menu_id, bahan_baku_id, jumlah_dipakai) VALUES (?, ?, ?)',
+            (menu_id, bahan_baku_id, jumlah_dipakai)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('resep'))
+
+    daftar_menu = conn.execute('SELECT id, nama FROM menu').fetchall()
+    daftar_bahan = conn.execute('SELECT id, nama, satuan FROM bahan_baku').fetchall()
+    conn.close()
+    return render_template('hpp/tambah_resep.html', daftar_menu=daftar_menu, daftar_bahan=daftar_bahan)
+
+
+@app.route('/hapus-resep/<int:id>')
+def hapus_resep(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    conn.execute('DELETE FROM resep WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('resep'))
+
 if __name__ == '__main__':
     app.run(debug=True)

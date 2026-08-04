@@ -35,3 +35,21 @@ CREATE TABLE IF NOT EXISTS admin (
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
 );
+
+-- Tabel 1: daftar bahan baku yang ada
+CREATE TABLE IF NOT EXISTS bahan_baku (
+    id INTEGER PRIMARY KEY,
+    nama TEXT NOT NULL,
+    harga_per_satuan INTEGER NOT NULL,
+    satuan TEXT NOT NULL
+);
+
+-- Tabel 2: tabel "penghubung" (junction table) - resep tiap menu
+CREATE TABLE IF NOT EXISTS resep (
+    id INTEGER PRIMARY KEY,
+    menu_id INTEGER NOT NULL,
+    bahan_baku_id INTEGER NOT NULL,
+    jumlah_dipakai REAL NOT NULL,
+    FOREIGN KEY (menu_id) REFERENCES menu(id),
+    FOREIGN KEY (bahan_baku_id) REFERENCES bahan_baku(id)
+);

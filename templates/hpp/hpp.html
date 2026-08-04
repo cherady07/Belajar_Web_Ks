@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pesanan Custom - Sweet Chil</title>
+    <title>Hitung HPP - Sweet Chil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
@@ -48,59 +48,47 @@
     </header>
 
     <main class="dashboard-content">
-      <h2>Pesanan Kue Custom</h2>
+      <h2>Hitung HPP (Harga Pokok Produksi)</h2>
 
+      <div class="info-box">
+        <p class="info-box-title">💡 Cara Pakai Halaman Ini</p>
+        <ol class="info-box-list">
+          <li>
+            Tambahkan bahan baku dulu di menu <strong>Bahan Baku</strong> (nama
+            bahan, harga per satuan, satuannya kg/liter/pack/dll).
+          </li>
+          <li>
+            Buka menu <strong>Resep</strong>, lalu tentukan menu mana pakai
+            bahan apa dan berapa banyak.
+          </li>
+          <li>
+            HPP akan otomatis terhitung di tabel bawah ini berdasarkan resep
+            yang sudah dibuat.
+          </li>
+        </ol>
+        <p class="info-box-note">
+          Kalau harga bahan naik/turun, cukup update di
+          <strong>Bahan Baku</strong> — HPP semua menu yang pakai bahan itu
+          otomatis ikut berubah.
+        </p>
+      </div>
       <table class="dashboard-table">
         <thead>
           <tr>
-            <th>Pemesan</th>
-            <th>Kontak</th>
-            <th>Jenis Kue</th>
-            <th>Tanggal Acara</th>
-            <th>Status</th>
-            <th>Harga</th>
-            <th>Referensi</th>
-            <th>Aksi</th>
+            <th>Menu</th>
+            <th>HPP</th>
+            <th>Harga Jual</th>
+            <th>Keuntungan</th>
           </tr>
         </thead>
         <tbody>
-          {% for p in pesanan %}
+          {% for item in hpp %}
           <tr>
-            <td>{{ p['nama_pemesan'] }}</td>
-            <td>{{ p['kontak_pemesanan'] }}</td>
+            <td>{{ item['nama'] }}</td>
+            <td>Rp {{ item['total_hpp'] | round(0) | int }}</td>
+            <td>Rp {{ item['harga_jual'] }}</td>
             <td>
-              {{ p['jenis_kue'] }}{% if p['ukuran'] %} ({{ p['ukuran'] }}){%
-              endif %}
-            </td>
-            <td>{{ p['tanggal_acara'] }}</td>
-            <td>
-              <span class="status-badge status-{{ p['status_pesanan'] }}"
-                >{{ p['status_pesanan'] }}</span
-              >
-            </td>
-            <td>
-              {% if p['harga'] %}Rp {{ p['harga'] }}{% else %}Belum ditentukan{%
-              endif %}
-            </td>
-            <td>
-              {% if p['foto_referensi'] %}
-              <a
-                href="{{ url_for('static', filename='images/referensi/' + p['foto_referensi']) }}"
-                target="_blank"
-              >
-                <img
-                  src="{{ url_for('static', filename='images/referensi/' + p['foto_referensi']) }}"
-                  class="dashboard-thumb"
-                />
-              </a>
-              {% else %} - {% endif %}
-            </td>
-            <td>
-              <a
-                href="{{ url_for('edit_pesanan', id=p['id']) }}"
-                class="btn-edit"
-                >Edit</a
-              >
+              Rp {{ (item['harga_jual'] - item['total_hpp']) | round(0) | int }}
             </td>
           </tr>
           {% endfor %}

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pesanan Custom - Sweet Chil</title>
+    <title>Resep - Sweet Chil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
@@ -48,58 +48,36 @@
     </header>
 
     <main class="dashboard-content">
-      <h2>Pesanan Kue Custom</h2>
+      <div class="dashboard-header">
+        <h2>Resep Menu</h2>
+        <a href="{{ url_for('tambah_resep') }}" class="btn-cta"
+          >+ Tambah Resep</a
+        >
+      </div>
 
       <table class="dashboard-table">
         <thead>
           <tr>
-            <th>Pemesan</th>
-            <th>Kontak</th>
-            <th>Jenis Kue</th>
-            <th>Tanggal Acara</th>
-            <th>Status</th>
-            <th>Harga</th>
-            <th>Referensi</th>
+            <th>Menu</th>
+            <th>Bahan</th>
+            <th>Jumlah Dipakai</th>
+            <th>Satuan</th>
             <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
-          {% for p in pesanan %}
+          {% for item in resep %}
           <tr>
-            <td>{{ p['nama_pemesan'] }}</td>
-            <td>{{ p['kontak_pemesanan'] }}</td>
-            <td>
-              {{ p['jenis_kue'] }}{% if p['ukuran'] %} ({{ p['ukuran'] }}){%
-              endif %}
-            </td>
-            <td>{{ p['tanggal_acara'] }}</td>
-            <td>
-              <span class="status-badge status-{{ p['status_pesanan'] }}"
-                >{{ p['status_pesanan'] }}</span
-              >
-            </td>
-            <td>
-              {% if p['harga'] %}Rp {{ p['harga'] }}{% else %}Belum ditentukan{%
-              endif %}
-            </td>
-            <td>
-              {% if p['foto_referensi'] %}
+            <td>{{ item['nama_menu'] }}</td>
+            <td>{{ item['nama_bahan'] }}</td>
+            <td>{{ item['jumlah_dipakai'] }}</td>
+            <td>{{ item['satuan'] }}</td>
+            <td class="dashboard-actions">
               <a
-                href="{{ url_for('static', filename='images/referensi/' + p['foto_referensi']) }}"
-                target="_blank"
-              >
-                <img
-                  src="{{ url_for('static', filename='images/referensi/' + p['foto_referensi']) }}"
-                  class="dashboard-thumb"
-                />
-              </a>
-              {% else %} - {% endif %}
-            </td>
-            <td>
-              <a
-                href="{{ url_for('edit_pesanan', id=p['id']) }}"
-                class="btn-edit"
-                >Edit</a
+                href="{{ url_for('hapus_resep', id=item['id']) }}"
+                class="btn-delete"
+                onclick="return confirm('Yakin mau hapus resep ini?');"
+                >Hapus</a
               >
             </td>
           </tr>

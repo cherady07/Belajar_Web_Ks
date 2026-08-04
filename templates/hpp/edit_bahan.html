@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tambah Menu - Sweet Chil</title>
+    <title>Edit Bahan - Sweet Chil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
@@ -15,9 +15,6 @@
   <body class="dashboard-page">
     <header class="dashboard-navbar">
       <p class="login-logo">🍡 Sweet Chil - Admin</p>
-      <a href="{{ url_for('dashboard') }}" class="btn-cta btn-logout"
-        >Kembali</a
-      >
       <nav class="dashboard-nav-links">
         <a
           href="{{ url_for('dashboard') }}"
@@ -44,39 +41,51 @@
           </div>
         </div>
       </nav>
+      <a href="{{ url_for('bahan_baku') }}" class="btn-cta btn-logout"
+        >Kembali</a
+      >
     </header>
 
     <main class="dashboard-content">
-      <h2>Tambah Menu Baru</h2>
+      <div class="dashboard-form">
+        <h2>Edit Bahan: {{ item['nama'] }}</h2>
+        <form method="POST">
+          <div class="form-group">
+            <label for="nama">Nama Bahan</label>
+            <input
+              type="text"
+              id="nama"
+              name="nama"
+              value="{{ item['nama'] }}"
+              required
+            />
+          </div>
 
-      <form method="POST" enctype="multipart/form-data" class="dashboard-form">
-        <div class="form-group">
-          <label for="nama">Nama Menu</label>
-          <input type="text" id="nama" name="nama" required />
-        </div>
+          <div class="form-group">
+            <label for="harga_per_satuan">Harga per Satuan (Rp)</label>
+            <input
+              type="number"
+              id="harga_per_satuan"
+              name="harga_per_satuan"
+              value="{{ item['harga_per_satuan'] }}"
+              required
+            />
+          </div>
 
-        <div class="form-group">
-          <label for="harga">Harga (Rp)</label>
-          <input type="number" id="harga" name="harga" required />
-        </div>
+          <div class="form-group">
+            <label for="satuan">Satuan</label>
+            <input
+              type="text"
+              id="satuan"
+              name="satuan"
+              value="{{ item['satuan'] }}"
+              required
+            />
+          </div>
 
-        <div class="form-group">
-          <label for="stok">Stok</label>
-          <input type="number" id="stok" name="stok" required />
-        </div>
-
-        <div class="form-group">
-          <label for="kategori">Kategori</label>
-          <input type="text" id="kategori" name="kategori" required />
-        </div>
-
-        <div class="form-group">
-          <label for="foto">Foto Menu</label>
-          <input type="file" id="foto" name="foto" accept="image/*" required />
-        </div>
-
-        <button type="submit" class="login-btn">Simpan Menu</button>
-      </form>
+          <button type="submit" class="login-btn">Update</button>
+        </form>
+      </div>
     </main>
   </body>
 </html>

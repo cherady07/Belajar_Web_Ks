@@ -16,9 +16,30 @@
     <header class="dashboard-navbar">
       <p class="login-logo">🍡 Sweet Chil - Admin</p>
       <nav class="dashboard-nav-links">
-        <a href="{{ url_for('dashboard') }}">Kelola Menu</a>
-        <a href="{{ url_for('kelola_pesanan') }}">Pesanan Custom</a>
-        <a href="{{ url_for('daftar_harga') }}" class="active">Daftar Harga</a>
+        <a
+          href="{{ url_for('dashboard') }}"
+          class="{{ 'active' if request.endpoint == 'dashboard' }}"
+          >Kelola Menu</a
+        >
+        <a
+          href="{{ url_for('kelola_pesanan') }}"
+          class="{{ 'active' if request.endpoint == 'kelola_pesanan' }}"
+          >Pesanan Custom</a
+        >
+        <a
+          href="{{ url_for('daftar_harga') }}"
+          class="{{ 'active' if request.endpoint == 'daftar_harga' }}"
+          >Daftar Harga</a
+        >
+
+        <div class="nav-dropdown">
+          <span class="nav-dropdown-toggle">Kalkulasi HPP ▾</span>
+          <div class="nav-dropdown-menu">
+            <a href="{{ url_for('hpp') }}">HPP</a>
+            <a href="{{ url_for('bahan_baku') }}">Bahan Baku</a>
+            <a href="{{ url_for('resep') }}">Resep</a>
+          </div>
+        </div>
       </nav>
       <div class="dashboard-navbar-right">
         <span>Halo, {{ username }}</span>

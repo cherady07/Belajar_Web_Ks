@@ -133,6 +133,7 @@
 
 .dashboard-nav-links {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
@@ -175,6 +176,99 @@
 .status-selesai {
   background-color: #d9efdd;
   color: #2e7d42;
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-toggle {
+  padding: 8px 18px;
+  border-radius: 20px;
+  color: #5a4a3a;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nav-dropdown-toggle:hover {
+  background-color: #fff6e9;
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fffdf8;
+  border: 2px solid #fce3b8;
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(122, 46, 61, 0.15);
+  z-index: 100;
+
+  /* Kondisi awal: tersembunyi + sedikit bergeser ke atas */
+  opacity: 0;
+  transform: translateY(-8px);
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.nav-dropdown-menu a {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #5a4a3a;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-dropdown-menu a:hover {
+  background-color: #fff6e9;
+}
+
+.info-box {
+  background-color: #fff6e9;
+  border: 2px solid #fce3b8;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.info-box-title {
+  font-weight: 700;
+  color: #7a2e3d;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.info-box-list {
+  margin: 0 0 16px 20px;
+  color: #5a4a3a;
+  line-height: 1.7;
+}
+
+.info-box-list li {
+  margin-bottom: 4px;
+}
+
+.info-box-note {
+  font-size: 14px;
+  color: #7a2e3d;
+  background-color: #fffdf8;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border-left: 4px solid #e8a33d;
+  margin: 0;
 }
 
 @media (max-width: 768px) {
