@@ -432,5 +432,31 @@ def hapus_resep(id):
     conn.close()
     return redirect(url_for('resep'))
 
+@app.route('/edit-resep/<int:id>', methods=['GET', 'POST'])
+def edit_resep(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    item = conn.execute('SELECT * FROM resep WHERE id = ?', (id,)).fetchone()
+
+    if request.method == 'POST':
+        menu_id = request.form['menu_id']
+        bahan_baku_id = request.form['bahan_baku_id']
+        jumlah_dipakai = request.form['jumlah_dipakai']
+
+        conn.execute(
+            'UPDATE resep SET menu_id = ?, bahan_baku_id = ?, jumlah_dipakai = ? WHERE id = ?',
+            (menu_id, bahan_baku_id, jumlah_dipakai, id)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('resep'))
+
+    daftar_menu = conn.execute('SELECT id, nama FROM menu').fetchall()
+    daftar_bahan = conn.execute('SELECT id, nama, satuan FROM bahan_baku').fetchall()
+    conn.close()
+    return render_template('hpp/edit_resep.html', item=item, daftar_menu=daftar_menu, daftar_bahan=daftar_bahan)
+
 if __name__ == '__main__':
     app.run(debug=True)

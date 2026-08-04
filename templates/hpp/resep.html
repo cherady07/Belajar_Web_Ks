@@ -74,6 +74,11 @@
             <td>{{ item['satuan'] }}</td>
             <td class="dashboard-actions">
               <a
+                href="{{ url_for('edit_resep', id=item['id']) }}"
+                class="btn-edit"
+                >Edit</a
+              >
+              <a
                 href="{{ url_for('hapus_resep', id=item['id']) }}"
                 class="btn-delete"
                 onclick="return confirm('Yakin mau hapus resep ini?');"
