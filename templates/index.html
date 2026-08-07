@@ -67,9 +67,26 @@
           class="menu-card"
           style="background-image: url('{{ url_for('static', filename='images/menu/' + item['foto']) }}');"
         >
+          {% if item['id'] in diskon_by_menu %}
+          <div class="diskon-badge">
+            -{{ diskon_by_menu[item['id']]['persentase_diskon'] }}%
+          </div>
+          {% endif %}
           <div class="menu-card-overlay">
             <h3>{{ item['nama'] }}</h3>
+            {% if item['id'] in diskon_by_menu %} {% set diskon_persen =
+            diskon_by_menu[item['id']]['persentase_diskon'] %} {% set
+            harga_diskon = (item['harga'] - (item['harga'] * diskon_persen /
+            100)) | round(0) | int %}
+            <p class="harga-asli">Rp {{ item['harga'] }}</p>
+            <p class="harga">Rp {{ harga_diskon }}</p>
+            <p
+              class="countdown"
+              data-selesai="{{ diskon_by_menu[item['id']]['tanggal_selesai'] }}"
+            ></p>
+            {% else %}
             <p class="harga">Rp {{ item['harga'] }}</p>
+            {% endif %}
           </div>
         </div>
         {% endfor %}

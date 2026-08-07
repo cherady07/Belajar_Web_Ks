@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bahan Baku - Sweet Chil</title>
+    <title>Diskon - Sweet Chil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
@@ -16,22 +16,9 @@
     <header class="dashboard-navbar">
       <p class="login-logo">🍡 Sweet Chil - Admin</p>
       <nav class="dashboard-nav-links">
-        <a
-          href="{{ url_for('dashboard') }}"
-          class="{{ 'active' if request.endpoint == 'dashboard' }}"
-          >Kelola Menu</a
-        >
-        <a
-          href="{{ url_for('kelola_pesanan') }}"
-          class="{{ 'active' if request.endpoint == 'kelola_pesanan' }}"
-          >Pesanan Custom</a
-        >
-        <a
-          href="{{ url_for('daftar_harga') }}"
-          class="{{ 'active' if request.endpoint == 'daftar_harga' }}"
-          >Daftar Harga</a
-        >
-
+        <a href="{{ url_for('dashboard') }}">Kelola Menu</a>
+        <a href="{{ url_for('kelola_pesanan') }}">Pesanan Custom</a>
+        <a href="{{ url_for('daftar_harga') }}">Daftar Harga</a>
         <div class="nav-dropdown">
           <span class="nav-dropdown-toggle">Kalkulasi HPP ▾</span>
           <div class="nav-dropdown-menu">
@@ -50,41 +37,54 @@
 
     <main class="dashboard-content">
       <div class="dashboard-header">
-        <h2>Bahan Baku</h2>
-        <a href="{{ url_for('tambah_bahan') }}" class="btn-cta"
-          >+ Tambah Bahan</a
+        <h2>Kelola Diskon</h2>
+        <a href="{{ url_for('tambah_diskon') }}" class="btn-cta"
+          >+ Tambah Diskon</a
         >
       </div>
 
       <table class="dashboard-table">
         <thead>
           <tr>
-            <th>Nama Bahan</th>
-            <th>Harga per Satuan</th>
-            <th>Satuan</th>
+            <th>Menu</th>
+            <th>Diskon</th>
+            <th>Harga Asli</th>
+            <th>Harga Diskon</th>
+            <th>Mulai</th>
+            <th>Selesai</th>
+            <th>Status</th>
             <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
-          {% for item in bahan %}
+          {% for d in diskon %}
           <tr>
-            <td>{{ item['nama'] }}</td>
-            <td>Rp {{ item['harga_per_satuan'] }}</td>
-            <td>{{ item['satuan'] }}</td>
+            <td>{{ d['nama_menu'] }}</td>
+            <td>{{ d['persentase_diskon'] }}%</td>
+            <td>Rp {{ d['harga_asli'] }}</td>
+            <td>
+              Rp {{ (d['harga_asli'] - (d['harga_asli'] * d['persentase_diskon']
+              / 100)) | round(0) | int }}
+            </td>
+            <td>{{ d['tanggal_mulai'] }}</td>
+            <td>{{ d['tanggal_selesai'] }}</td>
+            <td>
+              {% if d['status_aktif'] %}
+              <span class="status-badge status-selesai">Aktif</span>
+              {% else %}
+              <span class="status-badge status-pending">Nonaktif</span>
+              {% endif %}
+            </td>
             <td class="dashboard-actions">
               <a
-                href="{{ url_for('edit_bahan', id=item['id']) }}"
+                href="{{ url_for('edit_diskon', id=d['id']) }}"
                 class="btn-edit"
                 >Edit</a
               >
               <a
-                href="{{ url_for('hapus_bahan', id=item['id']) }}"
+                href="{{ url_for('hapus_diskon', id=d['id']) }}"
                 class="btn-delete"
-                onclick="
-                  return confirm(
-                    'Yakin mau hapus bahan ini? Resep yang pakai bahan ini bisa error.',
-                  );
-                "
+                onclick="return confirm('Yakin mau hapus diskon ini?');"
                 >Hapus</a
               >
             </td>

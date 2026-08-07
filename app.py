@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import check_password_hash
+from datetime import datetime  # tambahin di import, ganti baris 'from datetime import date' jadi ini kalau belum ada
 import sqlite3  # library Python bawaan buat koneksi ke SQLite (sudah dibahas sebelumnya)
 import os
 
@@ -17,13 +18,23 @@ def get_db_connection():
 def home():
     conn = get_db_connection()
     semua_menu = conn.execute('SELECT * FROM menu').fetchall()
+
+    sekarang = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    diskon_aktif = conn.execute('''
+        SELECT * FROM diskon
+        WHERE status_aktif = 1
+          AND tanggal_mulai <= ?
+          AND tanggal_selesai >= ?
+    ''', (sekarang, sekarang)).fetchall()
     conn.close()
+
+    # ubah list diskon jadi dictionary, biar gampang dicari berdasarkan menu_id
+    diskon_by_menu = {d['menu_id']: d for d in diskon_aktif}
 
     sukses = request.args.get('sukses')
     nama = request.args.get('nama', 'Kak')
 
-    return render_template('index.html', menu=semua_menu, sukses=sukses, nama=nama)
-
+    return render_template('index.html', menu=semua_menu, diskon_by_menu=diskon_by_menu, sukses=sukses, nama=nama)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -457,6 +468,88 @@ def edit_resep(id):
     daftar_bahan = conn.execute('SELECT id, nama, satuan FROM bahan_baku').fetchall()
     conn.close()
     return render_template('hpp/edit_resep.html', item=item, daftar_menu=daftar_menu, daftar_bahan=daftar_bahan)
+
+@app.route('/diskon')
+def diskon():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    semua_diskon = conn.execute('''
+        SELECT diskon.*, menu.nama AS nama_menu, menu.harga AS harga_asli
+        FROM diskon
+        JOIN menu ON diskon.menu_id = menu.id
+        ORDER BY diskon.tanggal_mulai DESC
+    ''').fetchall()
+    conn.close()
+    return render_template('promo/diskon.html', diskon=semua_diskon, username=session['username'])
+
+
+@app.route('/tambah-diskon', methods=['GET', 'POST'])
+def tambah_diskon():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+
+    if request.method == 'POST':
+        menu_id = request.form['menu_id']
+        persentase_diskon = request.form['persentase_diskon']
+        tanggal_mulai = request.form['tanggal_mulai'].replace('T', ' ') + ':00'
+        tanggal_selesai = request.form['tanggal_selesai'].replace('T', ' ') + ':00'
+        status_aktif = 1 if request.form.get('status_aktif') else 0
+
+        conn.execute(
+            'INSERT INTO diskon (menu_id, persentase_diskon, tanggal_mulai, tanggal_selesai, status_aktif) VALUES (?, ?, ?, ?, ?)',
+            (menu_id, persentase_diskon, tanggal_mulai, tanggal_selesai, status_aktif)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('diskon'))
+
+    daftar_menu = conn.execute('SELECT id, nama FROM menu').fetchall()
+    conn.close()
+    return render_template('promo/tambah_diskon.html', daftar_menu=daftar_menu)
+
+
+@app.route('/edit-diskon/<int:id>', methods=['GET', 'POST'])
+def edit_diskon(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    item = conn.execute('SELECT * FROM diskon WHERE id = ?', (id,)).fetchone()
+
+    if request.method == 'POST':
+        menu_id = request.form['menu_id']
+        persentase_diskon = request.form['persentase_diskon']
+        tanggal_mulai = request.form['tanggal_mulai'].replace('T', ' ') + ':00'
+        tanggal_selesai = request.form['tanggal_selesai'].replace('T', ' ') + ':00'
+        status_aktif = 1 if request.form.get('status_aktif') else 0
+
+        conn.execute(
+            'UPDATE diskon SET menu_id = ?, persentase_diskon = ?, tanggal_mulai = ?, tanggal_selesai = ?, status_aktif = ? WHERE id = ?',
+            (menu_id, persentase_diskon, tanggal_mulai, tanggal_selesai, status_aktif, id)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('diskon'))
+
+    daftar_menu = conn.execute('SELECT id, nama FROM menu').fetchall()
+    conn.close()
+    return render_template('promo/edit_diskon.html', item=item, daftar_menu=daftar_menu)
+
+
+@app.route('/hapus-diskon/<int:id>')
+def hapus_diskon(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    conn.execute('DELETE FROM diskon WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('diskon'))
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -53,3 +53,38 @@ CREATE TABLE IF NOT EXISTS resep (
     FOREIGN KEY (menu_id) REFERENCES menu(id),
     FOREIGN KEY (bahan_baku_id) REFERENCES bahan_baku(id)
 );
+
+CREATE TABLE IF NOT EXISTS diskon (
+    id INTEGER PRIMARY KEY,
+    menu_id INTEGER NOT NULL,
+    persentase_diskon INTEGER NOT NULL,
+    tanggal_mulai TEXT NOT NULL,
+    tanggal_selesai TEXT NOT NULL,
+    status_aktif INTEGER NOT NULL DEFAULT 1,
+    FOREIGN KEY (menu_id) REFERENCES menu(id)
+);
+
+CREATE TABLE IF NOT EXISTS pengumuman_menu_baru (
+    id INTEGER PRIMARY KEY,
+    menu_id INTEGER NOT NULL,
+    tanggal_mulai TEXT NOT NULL,
+    tanggal_selesai TEXT NOT NULL,
+    status_aktif INTEGER NOT NULL DEFAULT 1,
+    FOREIGN KEY (menu_id) REFERENCES menu(id)
+);
+
+CREATE TABLE IF NOT EXISTS ide_menu (
+    id INTEGER PRIMARY KEY,
+    nama_ide TEXT NOT NULL,
+    deskripsi TEXT,
+    tanggal_diajukan TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS vote (
+    id INTEGER PRIMARY KEY,
+    ide_menu_id INTEGER NOT NULL,
+    nomor_wa TEXT NOT NULL,
+    tanggal_vote TEXT NOT NULL,
+    FOREIGN KEY (ide_menu_id) REFERENCES ide_menu(id),
+    UNIQUE (ide_menu_id, nomor_wa)
+);

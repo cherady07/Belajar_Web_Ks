@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Diskon - Sweet Chil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body class="dashboard-page">
+    <header class="dashboard-navbar">
+        <p class="login-logo">🍡 Sweet Chil - Admin</p>
+        <a href="{{ url_for('diskon') }}" class="btn-cta btn-logout">Kembali</a>
+    </header>
+
+    <main class="dashboard-content">
+        <div class="dashboard-form">
+            <h2>Edit Diskon</h2>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="menu_id">Pilih Menu</label>
+                    <select id="menu_id" name="menu_id" required>
+                        {% for m in daftar_menu %}
+                        <option value="{{ m['id'] }}" {{ 'selected' if m['id'] == item['menu_id'] }}>{{ m['nama'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="persentase_diskon">Persentase Diskon (%)</label>
+                    <input type="number" id="persentase_diskon" name="persentase_diskon" value="{{ item['persentase_diskon'] }}" min="1" max="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal_mulai">Mulai</label>
+                    <input type="datetime-local" id="tanggal_mulai" name="tanggal_mulai" value="{{ item['tanggal_mulai'][:16].replace(' ', 'T') }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal_selesai">Selesai</label>
+                    <input type="datetime-local" id="tanggal_selesai" name="tanggal_selesai" value="{{ item['tanggal_selesai'][:16].replace(' ', 'T') }}" required>
+                </div>
+
+                <div class="form-group form-checkbox">
+                    <label>
+                        <input type="checkbox" id="status_aktif" name="status_aktif" {{ 'checked' if item['status_aktif'] }}>
+                        Diskon aktif
+                    </label>
+                </div>
+
+                <button type="submit" class="login-btn">Update Diskon</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

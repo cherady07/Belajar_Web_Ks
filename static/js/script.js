@@ -29,3 +29,27 @@ function tampilkanNamaFile(input) {
     namaFileElement.textContent = "";
   }
 }
+
+function updateCountdown() {
+  const elemenCountdown = document.querySelectorAll(".countdown");
+
+  elemenCountdown.forEach((el) => {
+    const selesai = new Date(el.dataset.selesai.replace(" ", "T"));
+    const sekarang = new Date();
+    const selisih = selesai - sekarang;
+
+    if (selisih <= 0) {
+      el.textContent = "Diskon berakhir";
+      return;
+    }
+
+    const jam = Math.floor(selisih / (1000 * 60 * 60));
+    const menit = Math.floor((selisih % (1000 * 60 * 60)) / (1000 * 60));
+    const detik = Math.floor((selisih % (1000 * 60)) / 1000);
+
+    el.textContent = `⏰ Berakhir dalam ${jam}j ${menit}m ${detik}d`;
+  });
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
