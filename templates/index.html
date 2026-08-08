@@ -57,7 +57,43 @@
         />
       </svg>
     </div>
-
+    {% if menu_baru %}
+    <section class="menu-baru-section fade-in">
+      <span class="eyebrow center">Baru Dirilis</span>
+      <h2>Menu Baru!</h2>
+      <div class="menu-grid menu-baru-grid">
+        {% for item in menu_baru %}
+        <div
+          class="menu-card menu-card-baru"
+          style="background-image: url('{{ url_for('static', filename='images/menu/' + item['foto']) }}');"
+        >
+          <div class="baru-badge">🆕 Baru</div>
+          {% if item['id'] in diskon_by_menu %}
+          <div class="diskon-badge">
+            -{{ diskon_by_menu[item['id']]['persentase_diskon'] }}%
+          </div>
+          {% endif %}
+          <div class="menu-card-overlay">
+            <h3>{{ item['nama'] }}</h3>
+            {% if item['id'] in diskon_by_menu %} {% set diskon_persen =
+            diskon_by_menu[item['id']]['persentase_diskon'] %} {% set
+            harga_diskon = (item['harga'] - (item['harga'] * diskon_persen /
+            100)) | round(0) | int %}
+            <p class="harga-asli">Rp {{ item['harga'] }}</p>
+            <p class="harga">Rp {{ harga_diskon }}</p>
+            <p
+              class="countdown"
+              data-selesai="{{ diskon_by_menu[item['id']]['tanggal_selesai'] }}"
+            ></p>
+            {% else %}
+            <p class="harga">Rp {{ item['harga'] }}</p>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
     <section id="menu" class="menu-section fade-in">
       <span class="eyebrow center">Paling Sering Dipesan</span>
       <h2>Menu Favorit Kami</h2>

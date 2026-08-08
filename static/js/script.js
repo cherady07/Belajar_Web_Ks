@@ -43,11 +43,19 @@ function updateCountdown() {
       return;
     }
 
-    const jam = Math.floor(selisih / (1000 * 60 * 60));
-    const menit = Math.floor((selisih % (1000 * 60 * 60)) / (1000 * 60));
-    const detik = Math.floor((selisih % (1000 * 60)) / 1000);
+    const totalJam = Math.floor(selisih / (1000 * 60 * 60));
 
-    el.textContent = `⏰ Berakhir dalam ${jam}j ${menit}m ${detik}d`;
+    if (totalJam >= 24) {
+      // Lebih dari 24 jam: tampilkan dalam hari
+      const hari = Math.floor(totalJam / 24);
+      el.textContent = `⏰ Berakhir dalam ${hari} hari lagi`;
+    } else {
+      // Kurang dari 24 jam: tampilkan jam, menit, detik seperti biasa
+      const jam = totalJam;
+      const menit = Math.floor((selisih % (1000 * 60 * 60)) / (1000 * 60));
+      const detik = Math.floor((selisih % (1000 * 60)) / 1000);
+      el.textContent = `⏰ Berakhir dalam ${jam}j ${menit}m ${detik}d`;
+    }
   });
 }
 

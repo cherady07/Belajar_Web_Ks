@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Resep - Sweet Chil</title>
+    <title>Pengumuman Menu Baru - Sweet Chil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
@@ -16,22 +16,9 @@
     <header class="dashboard-navbar">
       <p class="login-logo">🍡 Sweet Chil - Admin</p>
       <nav class="dashboard-nav-links">
-        <a
-          href="{{ url_for('dashboard') }}"
-          class="{{ 'active' if request.endpoint == 'dashboard' }}"
-          >Kelola Menu</a
-        >
-        <a
-          href="{{ url_for('kelola_pesanan') }}"
-          class="{{ 'active' if request.endpoint == 'kelola_pesanan' }}"
-          >Pesanan Custom</a
-        >
-        <a
-          href="{{ url_for('daftar_harga') }}"
-          class="{{ 'active' if request.endpoint == 'daftar_harga' }}"
-          >Daftar Harga</a
-        >
-
+        <a href="{{ url_for('dashboard') }}">Kelola Menu</a>
+        <a href="{{ url_for('kelola_pesanan') }}">Pesanan Custom</a>
+        <a href="{{ url_for('daftar_harga') }}">Daftar Harga</a>
         <div class="nav-dropdown">
           <span class="nav-dropdown-toggle">Kalkulasi HPP ▾</span>
           <div class="nav-dropdown-menu">
@@ -56,39 +43,68 @@
 
     <main class="dashboard-content">
       <div class="dashboard-header">
-        <h2>Resep Menu</h2>
-        <a href="{{ url_for('tambah_resep') }}" class="btn-cta"
-          >+ Tambah Resep</a
+        <h2>Pengumuman Menu Baru</h2>
+        <a href="{{ url_for('tambah_pengumuman') }}" class="btn-cta"
+          >+ Tambah Pengumuman</a
         >
+      </div>
+
+      <div class="info-box">
+        <p class="info-box-title">💡 Cara Pakai Halaman Ini</p>
+        <ol class="info-box-list">
+          <li>
+            Pastikan menu baru sudah ditambahkan dulu di menu
+            <strong>Kelola Menu</strong> (lengkap dengan foto, harga, dan
+            kategorinya).
+          </li>
+          <li>
+            Klik <strong>+ Tambah Pengumuman</strong>, lalu pilih menu yang baru
+            saja ditambahkan tadi.
+          </li>
+          <li>
+            Atur tanggal mulai & selesai pengumuman akan tampil (otomatis 2
+            minggu, bisa diubah manual).
+          </li>
+        </ol>
+        <p class="info-box-note">
+          Foto yang tampil di pengumuman otomatis mengambil foto dari menu yang
+          dipilih — jadi tidak perlu upload foto lagi di sini.
+        </p>
       </div>
 
       <table class="dashboard-table">
         <thead>
           <tr>
             <th>Menu</th>
-            <th>Bahan</th>
-            <th>Jumlah Dipakai</th>
-            <th>Satuan</th>
+            <th>Mulai</th>
+            <th>Selesai</th>
+            <th>Status</th>
             <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
-          {% for item in resep %}
+          {% for p in pengumuman %}
           <tr>
-            <td>{{ item['nama_menu'] }}</td>
-            <td>{{ item['nama_bahan'] }}</td>
-            <td>{{ item['jumlah_dipakai'] }}</td>
-            <td>{{ item['satuan'] }}</td>
+            <td>{{ p['nama_menu'] }}</td>
+            <td>{{ p['tanggal_mulai'] }}</td>
+            <td>{{ p['tanggal_selesai'] }}</td>
+            <td>
+              {% if p['status_aktif'] %}
+              <span class="status-badge status-selesai">Aktif</span>
+              {% else %}
+              <span class="status-badge status-pending">Nonaktif</span>
+              {% endif %}
+            </td>
             <td class="dashboard-actions">
               <a
-                href="{{ url_for('edit_resep', id=item['id']) }}"
+                href="{{ url_for('edit_pengumuman', id=p['id']) }}"
                 class="btn-edit"
                 >Edit</a
               >
               <a
-                href="{{ url_for('hapus_resep', id=item['id']) }}"
+                href="{{ url_for('hapus_pengumuman', id=p['id']) }}"
                 class="btn-delete"
-                onclick="return confirm('Yakin mau hapus resep ini?');"
+                onclick="return confirm('Yakin mau hapus pengumuman ini?');"
                 >Hapus</a
               >
             </td>

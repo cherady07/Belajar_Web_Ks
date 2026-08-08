@@ -623,3 +623,31 @@ h3 {
   font-weight: 700;
   margin-top: 4px;
 }
+
+.menu-baru-section {
+  text-align: center;
+  padding: 60px 40px 20px;
+}
+
+.menu-baru-section h2 {
+  font-size: 28px;
+  margin-bottom: 32px;
+}
+
+.menu-card-baru {
+  border-color: #e8a33d;
+  box-shadow: 0 4px 20px rgba(232, 163, 61, 0.35);
+}
+
+.baru-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: #e8a33d;
+  color: #2b2118;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  z-index: 2;
+}

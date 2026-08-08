@@ -27,7 +27,13 @@
             <a href="{{ url_for('resep') }}">Resep</a>
           </div>
         </div>
-        <a href="{{ url_for('diskon') }}" class="active">Diskon</a>
+        <div class="nav-dropdown">
+          <span class="nav-dropdown-toggle">Promosi ▾</span>
+          <div class="nav-dropdown-menu">
+            <a href="{{ url_for('diskon') }}">Diskon</a>
+            <a href="{{ url_for('pengumuman') }}">Pengumuman</a>
+          </div>
+        </div>
       </nav>
       <div class="dashboard-navbar-right">
         <span>Halo, {{ username }}</span>

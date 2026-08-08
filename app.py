@@ -17,26 +17,43 @@ def get_db_connection():
 @app.route('/')
 def home():
     conn = get_db_connection()
-    semua_menu = conn.execute('SELECT * FROM menu').fetchall()
 
     sekarang = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
     diskon_aktif = conn.execute('''
         SELECT * FROM diskon
         WHERE status_aktif = 1
           AND tanggal_mulai <= ?
           AND tanggal_selesai >= ?
     ''', (sekarang, sekarang)).fetchall()
-    conn.close()
-
-    # ubah list diskon jadi dictionary, biar gampang dicari berdasarkan menu_id
     diskon_by_menu = {d['menu_id']: d for d in diskon_aktif}
+
+    menu_baru = conn.execute('''
+        SELECT menu.* FROM pengumuman_menu_baru
+        JOIN menu ON pengumuman_menu_baru.menu_id = menu.id
+        WHERE pengumuman_menu_baru.status_aktif = 1
+          AND pengumuman_menu_baru.tanggal_mulai <= ?
+          AND pengumuman_menu_baru.tanggal_selesai >= ?
+    ''', (sekarang, sekarang)).fetchall()
+
+    # kumpulin id menu yang udah tampil di section "Menu Baru"
+    id_menu_baru = [item['id'] for item in menu_baru]
+
+    # ambil menu biasa, KECUALI yang udah masuk daftar menu baru
+    if id_menu_baru:
+        placeholder = ','.join('?' * len(id_menu_baru))
+        semua_menu = conn.execute(
+            f'SELECT * FROM menu WHERE id NOT IN ({placeholder})', id_menu_baru
+        ).fetchall()
+    else:
+        semua_menu = conn.execute('SELECT * FROM menu').fetchall()
+
+    conn.close()
 
     sukses = request.args.get('sukses')
     nama = request.args.get('nama', 'Kak')
 
-    return render_template('index.html', menu=semua_menu, diskon_by_menu=diskon_by_menu, sukses=sukses, nama=nama)
-
-
+    return render_template('index.html', menu=semua_menu, diskon_by_menu=diskon_by_menu, menu_baru=menu_baru, sukses=sukses, nama=nama)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -550,6 +567,86 @@ def hapus_diskon(id):
     conn.commit()
     conn.close()
     return redirect(url_for('diskon'))
+
+@app.route('/pengumuman')
+def pengumuman():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    semua_pengumuman = conn.execute('''
+        SELECT pengumuman_menu_baru.*, menu.nama AS nama_menu, menu.foto AS foto_menu
+        FROM pengumuman_menu_baru
+        JOIN menu ON pengumuman_menu_baru.menu_id = menu.id
+        ORDER BY pengumuman_menu_baru.tanggal_mulai DESC
+    ''').fetchall()
+    conn.close()
+    return render_template('promo/pengumuman.html', pengumuman=semua_pengumuman, username=session['username'])
+
+@app.route('/tambah-pengumuman', methods=['GET', 'POST'])
+def tambah_pengumuman():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+
+    if request.method == 'POST':
+        menu_id = request.form['menu_id']
+        tanggal_mulai = request.form['tanggal_mulai'].replace('T', ' ') + ':00'
+        tanggal_selesai = request.form['tanggal_selesai'].replace('T', ' ') + ':00'
+        status_aktif = 1 if request.form.get('status_aktif') else 0
+
+        conn.execute(
+            'INSERT INTO pengumuman_menu_baru (menu_id, tanggal_mulai, tanggal_selesai, status_aktif) VALUES (?, ?, ?, ?)',
+            (menu_id, tanggal_mulai, tanggal_selesai, status_aktif)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('pengumuman'))
+
+    daftar_menu = conn.execute('SELECT id, nama FROM menu').fetchall()
+    conn.close()
+    return render_template('promo/tambah_pengumuman.html', daftar_menu=daftar_menu)
+
+
+@app.route('/edit-pengumuman/<int:id>', methods=['GET', 'POST'])
+def edit_pengumuman(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    item = conn.execute('SELECT * FROM pengumuman_menu_baru WHERE id = ?', (id,)).fetchone()
+
+    if request.method == 'POST':
+        menu_id = request.form['menu_id']
+        tanggal_mulai = request.form['tanggal_mulai'].replace('T', ' ') + ':00'
+        tanggal_selesai = request.form['tanggal_selesai'].replace('T', ' ') + ':00'
+        status_aktif = 1 if request.form.get('status_aktif') else 0
+
+        conn.execute(
+            'UPDATE pengumuman_menu_baru SET menu_id = ?, tanggal_mulai = ?, tanggal_selesai = ?, status_aktif = ? WHERE id = ?',
+            (menu_id, tanggal_mulai, tanggal_selesai, status_aktif, id)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('pengumuman'))
+
+    daftar_menu = conn.execute('SELECT id, nama FROM menu').fetchall()
+    conn.close()
+    return render_template('promo/edit_pengumuman.html', item=item, daftar_menu=daftar_menu)
+
+
+@app.route('/hapus-pengumuman/<int:id>')
+def hapus_pengumuman(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    conn.execute('DELETE FROM pengumuman_menu_baru WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('pengumuman'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
