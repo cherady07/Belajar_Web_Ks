@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Menu - Sweet Chil</title>
+    <title>Edit Ide Menu - Sweet Chil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
@@ -15,24 +15,10 @@
   <body class="dashboard-page">
     <header class="dashboard-navbar">
       <p class="login-logo">🍡 Sweet Chil - Admin</p>
-
       <nav class="dashboard-nav-links">
-        <a
-          href="{{ url_for('dashboard') }}"
-          class="{{ 'active' if request.endpoint == 'dashboard' }}"
-          >Kelola Menu</a
-        >
-        <a
-          href="{{ url_for('kelola_pesanan') }}"
-          class="{{ 'active' if request.endpoint == 'kelola_pesanan' }}"
-          >Pesanan Custom</a
-        >
-        <a
-          href="{{ url_for('daftar_harga') }}"
-          class="{{ 'active' if request.endpoint == 'daftar_harga' }}"
-          >Daftar Harga</a
-        >
-
+        <a href="{{ url_for('dashboard') }}">Kelola Menu</a>
+        <a href="{{ url_for('kelola_pesanan') }}">Pesanan Custom</a>
+        <a href="{{ url_for('daftar_harga') }}">Daftar Harga</a>
         <div class="nav-dropdown">
           <span class="nav-dropdown-toggle">Kalkulasi HPP ▾</span>
           <div class="nav-dropdown-menu">
@@ -50,81 +36,61 @@
           </div>
         </div>
       </nav>
-      <a href="{{ url_for('dashboard') }}" class="btn-cta btn-logout"
-        >Kembali</a
-      >
+      <a href="{{ url_for('ide_menu') }}" class="btn-cta btn-logout">Kembali</a>
     </header>
 
     <main class="dashboard-content">
-      <h2>Edit Menu: {{ item['nama'] }}</h2>
-
-      <div class="edit-menu-layout">
+      <div class="dashboard-form">
+        <h2>Edit Ide: {{ item['nama_ide'] }}</h2>
         <form
           method="POST"
           enctype="multipart/form-data"
           class="dashboard-form"
         >
           <div class="form-group">
-            <label for="nama">Nama Menu</label>
+            <label for="nama_ide">Nama Ide Menu</label>
             <input
               type="text"
-              id="nama"
-              name="nama"
-              value="{{ item['nama'] }}"
+              id="nama_ide"
+              name="nama_ide"
+              value="{{ item['nama_ide'] }}"
               required
             />
           </div>
 
           <div class="form-group">
-            <label for="harga">Harga (Rp)</label>
-            <input
-              type="number"
-              id="harga"
-              name="harga"
-              value="{{ item['harga'] }}"
-              required
-            />
+            <label for="deskripsi">Deskripsi</label>
+            <textarea id="deskripsi" name="deskripsi" rows="4">
+{{ item['deskripsi'] }}</textarea
+            >
           </div>
 
+          {% if item['foto'] %}
           <div class="form-group">
-            <label for="stok">Stok</label>
-            <input
-              type="number"
-              id="stok"
-              name="stok"
-              value="{{ item['stok'] }}"
-              required
+            <label>Foto Saat Ini</label><br />
+            <img
+              src="{{ url_for('static', filename='images/ide_menu/' + item['foto']) }}"
+              class="dashboard-thumb"
             />
           </div>
-
-          <div class="form-group">
-            <label for="kategori">Kategori</label>
-            <input
-              type="text"
-              id="kategori"
-              name="kategori"
-              value="{{ item['kategori'] }}"
-              required
-            />
-          </div>
+          {% endif %}
 
           <div class="form-group">
             <label for="foto"
-              >Ganti Foto (kosongkan kalau tidak ingin ganti)</label
+              >Ganti Foto (kosongkan jika tidak ingin ganti)</label
             >
             <input type="file" id="foto" name="foto" accept="image/*" />
           </div>
 
-          <button type="submit" class="login-btn">Update Menu</button>
-        </form>
+          <div class="form-group form-checkbox">
+    <label>
+        <input type="checkbox" id="status_tampil" name="status_tampil" {{ 'checked' if item['status_tampil'] }}>
+        Tampilkan di landing page
+    </label>
+</div>
 
-        <div class="photo-preview-card">
-          <p class="photo-preview-label">Foto Saat Ini</p>
-          <img
-            src="{{ url_for('static', filename='images/menu/' + item['foto']) }}"
-            alt="{{ item['nama'] }}"
-          />
-        </div>
+          <button type="submit" class="login-btn">Update Ide</button>
+        </form> 
       </div>
     </main>
   </body>

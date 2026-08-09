@@ -22,9 +22,7 @@ def home():
 
     diskon_aktif = conn.execute('''
         SELECT * FROM diskon
-        WHERE status_aktif = 1
-          AND tanggal_mulai <= ?
-          AND tanggal_selesai >= ?
+        WHERE status_aktif = 1 AND tanggal_mulai <= ? AND tanggal_selesai >= ?
     ''', (sekarang, sekarang)).fetchall()
     diskon_by_menu = {d['menu_id']: d for d in diskon_aktif}
 
@@ -35,11 +33,8 @@ def home():
           AND pengumuman_menu_baru.tanggal_mulai <= ?
           AND pengumuman_menu_baru.tanggal_selesai >= ?
     ''', (sekarang, sekarang)).fetchall()
-
-    # kumpulin id menu yang udah tampil di section "Menu Baru"
     id_menu_baru = [item['id'] for item in menu_baru]
 
-    # ambil menu biasa, KECUALI yang udah masuk daftar menu baru
     if id_menu_baru:
         placeholder = ','.join('?' * len(id_menu_baru))
         semua_menu = conn.execute(
@@ -48,12 +43,27 @@ def home():
     else:
         semua_menu = conn.execute('SELECT * FROM menu').fetchall()
 
+    ide_voting = conn.execute('''
+        SELECT ide_menu.*, COUNT(vote.id) AS jumlah_vote
+        FROM ide_menu
+        LEFT JOIN vote ON ide_menu.id = vote.ide_menu_id
+        WHERE ide_menu.status_tampil = 1
+          AND ide_menu.tanggal_mulai_tampil <= ?
+          AND ide_menu.tanggal_selesai_tampil >= ?
+        GROUP BY ide_menu.id
+        ORDER BY jumlah_vote DESC
+    ''', (sekarang, sekarang)).fetchall()
+
     conn.close()
 
     sukses = request.args.get('sukses')
     nama = request.args.get('nama', 'Kak')
+    vote_pesan = request.args.get('vote_pesan')
 
-    return render_template('index.html', menu=semua_menu, diskon_by_menu=diskon_by_menu, menu_baru=menu_baru, sukses=sukses, nama=nama)
+    return render_template('index.html', menu=semua_menu, diskon_by_menu=diskon_by_menu,
+                            menu_baru=menu_baru, ide_voting=ide_voting,
+                            sukses=sukses, nama=nama, vote_pesan=vote_pesan)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -647,6 +657,181 @@ def hapus_pengumuman(id):
     conn.close()
     return redirect(url_for('pengumuman'))
 
+@app.route('/ide-menu')
+def ide_menu():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    semua_ide = conn.execute('''
+        SELECT ide_menu.*, COUNT(vote.id) AS jumlah_vote
+        FROM ide_menu
+        LEFT JOIN vote ON ide_menu.id = vote.ide_menu_id
+        GROUP BY ide_menu.id
+        ORDER BY jumlah_vote DESC
+    ''').fetchall()
+
+    sekarang = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    sedang_voting = conn.execute('''
+        SELECT ide_menu.*, COUNT(vote.id) AS jumlah_vote
+        FROM ide_menu
+        LEFT JOIN vote ON ide_menu.id = vote.ide_menu_id
+        WHERE ide_menu.status_tampil = 1
+          AND ide_menu.tanggal_mulai_tampil <= ?
+          AND ide_menu.tanggal_selesai_tampil >= ?
+        GROUP BY ide_menu.id
+        ORDER BY jumlah_vote DESC
+    ''', (sekarang, sekarang)).fetchall()
+    conn.close()
+
+    return render_template('promo/ide_menu.html', ide=semua_ide, sedang_voting=sedang_voting, username=session['username'])
+
+@app.route('/tambah-ide', methods=['GET', 'POST'])
+def tambah_ide():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        nama_ide = request.form['nama_ide']
+        deskripsi = request.form['deskripsi']
+        tanggal_diajukan = date.today().isoformat()
+        status_tampil = 1 if request.form.get('status_tampil') else 0
+
+        foto = request.files['foto']
+        if foto and foto.filename != '':
+            nama_file_foto = foto.filename
+            foto.save(os.path.join('static/images/ide_menu', nama_file_foto))
+        else:
+            nama_file_foto = None
+
+        conn = get_db_connection()
+        conn.execute(
+            'INSERT INTO ide_menu (nama_ide, deskripsi, tanggal_diajukan, foto, status_tampil) VALUES (?, ?, ?, ?, ?)',
+            (nama_ide, deskripsi, tanggal_diajukan, nama_file_foto, status_tampil)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('ide_menu'))
+
+    return render_template('promo/tambah_ide.html')
+
+
+@app.route('/hapus-ide/<int:id>')
+def hapus_ide(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    conn.execute('DELETE FROM ide_menu WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('ide_menu'))
+
+@app.route('/edit-ide/<int:id>', methods=['GET', 'POST'])
+def edit_ide(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    item = conn.execute('SELECT * FROM ide_menu WHERE id = ?', (id,)).fetchone()
+
+    if request.method == 'POST':
+        nama_ide = request.form['nama_ide']
+        deskripsi = request.form['deskripsi']
+        status_tampil = 1 if request.form.get('status_tampil') else 0
+
+        foto = request.files['foto']
+        if foto and foto.filename != '':
+            nama_file_foto = foto.filename
+            foto.save(os.path.join('static/images/ide_menu', nama_file_foto))
+        else:
+            nama_file_foto = item['foto']
+
+        conn.execute(
+            'UPDATE ide_menu SET nama_ide = ?, deskripsi = ?, foto = ?, status_tampil = ? WHERE id = ?',
+            (nama_ide, deskripsi, nama_file_foto, status_tampil, id)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('ide_menu'))
+
+    conn.close()
+    return render_template('promo/edit_ide.html', item=item)
+
+@app.route('/mulai-voting', methods=['POST'])
+def mulai_voting():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    ide_terpilih = request.form.getlist('ide_ids')
+    tanggal_mulai = request.form['tanggal_mulai_voting'].replace('T', ' ') + ':00'
+    tanggal_selesai = request.form['tanggal_selesai_voting'].replace('T', ' ') + ':00'
+
+    conn = get_db_connection()
+    for id_ide in ide_terpilih:
+        # hapus vote lama, mulai dari 0 lagi
+        conn.execute('DELETE FROM vote WHERE ide_menu_id = ?', (id_ide,))
+        conn.execute(
+            'UPDATE ide_menu SET status_tampil = 1, tanggal_mulai_tampil = ?, tanggal_selesai_tampil = ? WHERE id = ?',
+            (tanggal_mulai, tanggal_selesai, id_ide)
+        )
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('ide_menu'))
+
+@app.route('/hentikan-voting/<int:id>')
+def hentikan_voting(id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    conn.execute('UPDATE ide_menu SET status_tampil = 0 WHERE id = ?', (id,))
+
+    # cek sisa ide yang masih aktif setelah yang ini dihentikan
+    sisa_aktif = conn.execute(
+        'SELECT id FROM ide_menu WHERE status_tampil = 1'
+    ).fetchall()
+
+    # kalau tinggal 1 ide aktif, otomatis hentikan juga (voting minimal butuh 2 pilihan)
+    if len(sisa_aktif) == 1:
+        conn.execute('UPDATE ide_menu SET status_tampil = 0 WHERE id = ?', (sisa_aktif[0]['id'],))
+
+    conn.commit()
+    conn.close()
+    return redirect(url_for('ide_menu'))
+
+@app.route('/hentikan-semua-voting')
+def hentikan_semua_voting():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    conn.execute('UPDATE ide_menu SET status_tampil = 0 WHERE status_tampil = 1')
+    conn.commit()
+    conn.close()
+    return redirect(url_for('ide_menu'))
+
+@app.route('/vote', methods=['POST'])
+def vote():
+    ide_menu_id = request.form['ide_menu_id']
+    nomor_wa = request.form['nomor_wa']
+    tanggal_vote = date.today().isoformat()
+
+    conn = get_db_connection()
+    try:
+        conn.execute(
+            'INSERT INTO vote (ide_menu_id, nomor_wa, tanggal_vote) VALUES (?, ?, ?)',
+            (ide_menu_id, nomor_wa, tanggal_vote)
+        )
+        conn.commit()
+        pesan = 'berhasil'
+    except sqlite3.IntegrityError:
+        pesan = 'sudah_vote'
+    finally:
+        conn.close()
+
+    return redirect(url_for('home', vote_pesan=pesan) + '#voting')
 
 if __name__ == '__main__':
     app.run(debug=True)

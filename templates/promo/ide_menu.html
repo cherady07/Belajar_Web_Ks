@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ide Menu - Sweet Chil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/dashboard.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="dashboard-navbar">
+      <p class="login-logo">🍡 Sweet Chil - Admin</p>
+      <nav class="dashboard-nav-links">
+        <a href="{{ url_for('dashboard') }}">Kelola Menu</a>
+        <a href="{{ url_for('kelola_pesanan') }}">Pesanan Custom</a>
+        <a href="{{ url_for('daftar_harga') }}">Daftar Harga</a>
+        <div class="nav-dropdown">
+          <span class="nav-dropdown-toggle">Kalkulasi HPP ▾</span>
+          <div class="nav-dropdown-menu">
+            <a href="{{ url_for('hpp') }}">HPP</a>
+            <a href="{{ url_for('bahan_baku') }}">Bahan Baku</a>
+            <a href="{{ url_for('resep') }}">Resep</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <span class="nav-dropdown-toggle">Promosi ▾</span>
+          <div class="nav-dropdown-menu">
+            <a href="{{ url_for('diskon') }}">Diskon</a>
+            <a href="{{ url_for('pengumuman') }}">Pengumuman</a>
+            <a href="{{ url_for('ide_menu') }}">Ide Menu</a>
+          </div>
+        </div>
+      </nav>
+      <div class="dashboard-navbar-right">
+        <span>Halo, {{ username }}</span>
+        <a href="{{ url_for('logout') }}" class="btn-cta btn-logout">Logout</a>
+      </div>
+    </header>
+
+    <main class="dashboard-content">
+      <div class="dashboard-header">
+        <h2>Ide Menu dari Customer</h2>
+        <a href="{{ url_for('tambah_ide') }}" class="btn-cta">+ Tambah Ide</a>
+      </div>
+
+      <div class="info-box">
+        <p class="info-box-title">💡 Cara Pakai Halaman Ini</p>
+        <ol class="info-box-list">
+          <li>
+            Catat ide dari customer di <strong>+ Tambah Ide</strong> (lengkap
+            dengan foto percobaan).
+          </li>
+          <li>
+            Centang ide-ide yang mau dibuka votingnya di tabel bawah, atur
+            durasi, lalu klik <strong>Mulai Voting</strong>.
+          </li>
+          <li>
+            Ide yang sedang voting otomatis tampil di landing page untuk
+            customer pilih.
+          </li>
+        </ol>
+      </div>
+
+      {% if sedang_voting %}
+      <div class="dashboard-header">
+        <h3>🔥 Sedang Voting Sekarang</h3>
+        <a
+          href="{{ url_for('hentikan_semua_voting') }}"
+          class="btn-delete"
+          onclick="
+            return confirm(
+              'Yakin mau hentikan SEMUA voting yang sedang berjalan?',
+            );
+          "
+          >Hentikan Semua</a
+        >
+      </div>
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Nama Ide</th>
+            <th>Jumlah Vote</th>
+            <th>Berakhir</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in sedang_voting %}
+          <tr>
+            <td>{{ v['nama_ide'] }}</td>
+            <td><strong>{{ v['jumlah_vote'] }}</strong> vote</td>
+            <td>{{ v['tanggal_selesai_tampil'] }}</td>
+            <td class="dashboard-actions">
+              <a
+                href="{{ url_for('hentikan_voting', id=v['id']) }}"
+                class="btn-delete"
+                onclick="
+                  return confirm('Yakin mau hentikan voting untuk ide ini?');
+                "
+                >Hentikan</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+
+      <h3 style="margin-top: 32px">Semua Ide</h3>
+      <form
+        method="POST"
+        action="{{ url_for('mulai_voting') }}"
+        id="formVoting"
+      >
+        <table class="dashboard-table">
+          <thead>
+            <tr>
+              <th>Pilih</th>
+              <th>Foto</th>
+              <th>Nama Ide</th>
+              <th>Deskripsi</th>
+              <th>Jumlah Vote</th>
+              <th>Status</th>
+              <th>Diajukan</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in ide %}
+            <tr>
+              <td>
+                <input type="checkbox" name="ide_ids" value="{{ i['id'] }}" />
+              </td>
+              <td>
+                {% if i['foto'] %}
+                <img
+                  src="{{ url_for('static', filename='images/ide_menu/' + i['foto']) }}"
+                  class="dashboard-thumb"
+                />
+                {% else %} - {% endif %}
+              </td>
+              <td>{{ i['nama_ide'] }}</td>
+              <td>{{ i['deskripsi'] }}</td>
+              <td><strong>{{ i['jumlah_vote'] }}</strong> vote</td>
+              <td>
+                {% if i['status_tampil'] %}
+                <span class="status-badge status-selesai">Tampil</span>
+                {% else %}
+                <span class="status-badge status-pending">Tersembunyi</span>
+                {% endif %}
+              </td>
+              <td>{{ i['tanggal_diajukan'] }}</td>
+              <td class="dashboard-actions">
+                <a href="{{ url_for('edit_ide', id=i['id']) }}" class="btn-edit"
+                  >Edit</a
+                >
+                <a
+                  href="{{ url_for('hapus_ide', id=i['id']) }}"
+                  class="btn-delete"
+                  onclick="
+                    return confirm(
+                      'Yakin mau hapus ide ini? Semua vote-nya akan ikut hilang.',
+                    );
+                  "
+                  >Hapus</a
+                >
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="dashboard-form" style="margin-top: 20px">
+          <h3>Mulai Voting untuk Ide Terpilih</h3>
+          <div class="form-group">
+            <label for="tanggal_mulai_voting">Mulai</label>
+            <input
+              type="datetime-local"
+              id="tanggal_mulai_voting"
+              name="tanggal_mulai_voting"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="tanggal_selesai_voting">Selesai</label>
+            <input
+              type="datetime-local"
+              id="tanggal_selesai_voting"
+              name="tanggal_selesai_voting"
+              required
+            />
+          </div>
+          <button type="submit" class="login-btn">Mulai Voting</button>
+        </div>
+      </form>
+    </main>
+
+    <script>
+      document
+        .getElementById("tanggal_mulai_voting")
+        .addEventListener("change", function () {
+          const mulai = new Date(this.value);
+          const selesai = new Date(mulai);
+          selesai.setDate(selesai.getDate() + 14);
+          const pad = (n) => n.toString().padStart(2, "0");
+          const formatted = `${selesai.getFullYear()}-${pad(selesai.getMonth() + 1)}-${pad(selesai.getDate())}T${pad(selesai.getHours())}:${pad(selesai.getMinutes())}`;
+          document.getElementById("tanggal_selesai_voting").value = formatted;
+        });
+
+      document
+        .getElementById("formVoting")
+        .addEventListener("submit", function (e) {
+          const checkedBoxes = document.querySelectorAll(
+            'input[name="ide_ids"]:checked',
+          );
+
+          if (checkedBoxes.length === 0) {
+            e.preventDefault();
+            alert("Pilih minimal 2 ide untuk memulai voting.");
+          } else if (checkedBoxes.length === 1) {
+            e.preventDefault();
+            alert(
+              "Voting butuh minimal 2 pilihan ide. Silakan centang setidaknya 1 ide lagi.",
+            );
+          }
+        });
+    </script>
+  </body>
+</html>

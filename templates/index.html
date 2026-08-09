@@ -129,6 +129,77 @@
       </div>
     </section>
 
+    {% if ide_voting %}
+    <section id="voting" class="voting-section fade-in">
+      <span class="eyebrow center">Bantu Kami Menentukan</span>
+      <h2>Vote Ide Menu Favoritmu!</h2>
+      <p class="voting-intro">
+        Menu mana yang paling kamu tunggu? Vote sekarang, juara vote bakal jadi
+        menu tetap kami!
+      </p>
+
+      {% if vote_pesan == 'berhasil' %}
+      <p class="vote-feedback vote-sukses">
+        ✅ Terima kasih, vote kamu berhasil dicatat!
+      </p>
+      {% elif vote_pesan == 'sudah_vote' %}
+      <p class="vote-feedback vote-gagal">
+        ⚠️ Nomor WA ini sudah pernah vote untuk ide ini.
+      </p>
+      {% endif %}
+
+      <div class="voting-grid">
+        {% for ide in ide_voting %}
+        <div class="voting-card">
+          {% if ide['foto'] %}
+          <img
+            src="{{ url_for('static', filename='images/ide_menu/' + ide['foto']) }}"
+            alt="{{ ide['nama_ide'] }}"
+            class="voting-foto"
+          />
+          {% endif %}
+          <h3>{{ ide['nama_ide'] }}</h3>
+          <p class="voting-deskripsi">{{ ide['deskripsi'] }}</p>
+          <p class="voting-count">{{ ide['jumlah_vote'] }} vote</p>
+          <button
+            class="btn-cta btn-light btn-vote"
+            data-ide-id="{{ ide['id'] }}"
+            data-ide-nama="{{ ide['nama_ide'] }}"
+          >
+            Vote Ide Ini
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <div class="modal-overlay" id="modalVote" style="display: none">
+      <div class="modal-box">
+        <p class="login-logo">🍡 Sweet Chil</p>
+        <h2 id="voteModalTitle">Vote Ide Ini</h2>
+        <p class="modal-text">
+          Masukkan nomor WhatsApp kamu untuk vote (1 nomor cuma bisa vote 1x per
+          ide).
+        </p>
+        <form method="POST" action="{{ url_for('vote') }}" id="formVote">
+          <input type="hidden" name="ide_menu_id" id="voteIdeId" />
+          <div class="form-group" style="text-align: left">
+            <label for="nomor_wa">Nomor WhatsApp</label>
+            <input
+              type="text"
+              name="nomor_wa"
+              id="voteNomorWa"
+              placeholder="Contoh: 628123456789"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-cta login-btn">Kirim Vote</button>
+        </form>
+        <button onclick="tutupModalVote()" class="modal-close">Batal</button>
+      </div>
+    </div>
+    {% endif %}
+
     <section class="why-us fade-in">
       <div class="why-us-grid">
         <div class="why-item">

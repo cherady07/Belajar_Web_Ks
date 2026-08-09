@@ -61,3 +61,36 @@ function updateCountdown() {
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+// ambil nomor WA yang mungkin sudah tersimpan dari vote sebelumnya
+function bukaModalVote(ideId, ideNama) {
+  document.getElementById("voteIdeId").value = ideId;
+  document.getElementById("voteModalTitle").textContent = "Vote: " + ideNama;
+
+  const nomorTersimpan = localStorage.getItem("nomor_wa_vote");
+  if (nomorTersimpan) {
+    document.getElementById("voteNomorWa").value = nomorTersimpan;
+  }
+
+  document.getElementById("modalVote").style.display = "flex";
+}
+
+function tutupModalVote() {
+  document.getElementById("modalVote").style.display = "none";
+}
+
+// pasang event listener ke semua tombol vote
+document.querySelectorAll(".btn-vote").forEach((btn) => {
+  btn.addEventListener("click", function () {
+    bukaModalVote(this.dataset.ideId, this.dataset.ideNama);
+  });
+});
+
+// simpan nomor WA ke localStorage sebelum form submit
+const formVote = document.getElementById("formVote");
+if (formVote) {
+  formVote.addEventListener("submit", function () {
+    const nomorWa = document.getElementById("voteNomorWa").value;
+    localStorage.setItem("nomor_wa_vote", nomorWa);
+  });
+}

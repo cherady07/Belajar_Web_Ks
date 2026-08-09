@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tambah Bahan - Sweet Chil</title>
+    <title>Tambah Ide Menu - Sweet Chil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap"
@@ -16,22 +16,9 @@
     <header class="dashboard-navbar">
       <p class="login-logo">🍡 Sweet Chil - Admin</p>
       <nav class="dashboard-nav-links">
-        <a
-          href="{{ url_for('dashboard') }}"
-          class="{{ 'active' if request.endpoint == 'dashboard' }}"
-          >Kelola Menu</a
-        >
-        <a
-          href="{{ url_for('kelola_pesanan') }}"
-          class="{{ 'active' if request.endpoint == 'kelola_pesanan' }}"
-          >Pesanan Custom</a
-        >
-        <a
-          href="{{ url_for('daftar_harga') }}"
-          class="{{ 'active' if request.endpoint == 'daftar_harga' }}"
-          >Daftar Harga</a
-        >
-
+        <a href="{{ url_for('dashboard') }}">Kelola Menu</a>
+        <a href="{{ url_for('kelola_pesanan') }}">Pesanan Custom</a>
+        <a href="{{ url_for('daftar_harga') }}">Daftar Harga</a>
         <div class="nav-dropdown">
           <span class="nav-dropdown-toggle">Kalkulasi HPP ▾</span>
           <div class="nav-dropdown-menu">
@@ -49,48 +36,51 @@
           </div>
         </div>
       </nav>
-      <a href="{{ url_for('bahan_baku') }}" class="btn-cta btn-logout"
-        >Kembali</a
-      >
+      <a href="{{ url_for('ide_menu') }}" class="btn-cta btn-logout">Kembali</a>
     </header>
 
     <main class="dashboard-content">
       <div class="dashboard-form">
-        <h2>Tambah Bahan Baku</h2>
-        <form method="POST">
+        <h2>Tambah Ide Menu</h2>
+        <form
+          method="POST"
+          enctype="multipart/form-data"
+          class="dashboard-form"
+        >
           <div class="form-group">
-            <label for="nama">Nama Bahan</label>
+            <label for="nama_ide">Nama Ide Menu</label>
             <input
               type="text"
-              id="nama"
-              name="nama"
-              placeholder="Contoh: Tepung Terigu"
+              id="nama_ide"
+              name="nama_ide"
+              placeholder="Contoh: Donat Custom Topping"
               required
             />
           </div>
 
           <div class="form-group">
-            <label for="harga_per_satuan">Harga per Satuan (Rp)</label>
-            <input
-              type="number"
-              id="harga_per_satuan"
-              name="harga_per_satuan"
-              required
-            />
+            <label for="deskripsi">Deskripsi</label>
+            <textarea
+              id="deskripsi"
+              name="deskripsi"
+              rows="4"
+              placeholder="Ceritain detail ide dari customer..."
+            ></textarea>
           </div>
 
           <div class="form-group">
-            <label for="satuan">Satuan</label>
-            <input
-              type="text"
-              id="satuan"
-              name="satuan"
-              placeholder="kg / liter / pack / butir"
-              required
-            />
+            <label for="foto">Foto Percobaan</label>
+            <input type="file" id="foto" name="foto" accept="image/*" />
           </div>
 
-          <button type="submit" class="login-btn">Simpan</button>
+          <div class="form-group form-checkbox">
+            <label>
+              <input type="checkbox" id="status_tampil" name="status_tampil" />
+              Tampilkan di landing page sekarang
+            </label>
+          </div>
+
+          <button type="submit" class="login-btn">Simpan Ide</button>
         </form>
       </div>
     </main>
